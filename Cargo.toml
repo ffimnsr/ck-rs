@@ -1,0 +1,83 @@
+[workspace]
+resolver = "2"
+members = [
+  "crates/chainkeeper-core",
+  "crates/chainkeeper-store",
+  "crates/chainkeeper-crypto",
+  "crates/chainkeeper-policy",
+  "crates/chainkeeper-audit",
+  "crates/chainkeeper-git",
+  "crates/chainkeeper-engine",
+  "crates/chainkeeper-publish",
+  "crates/chainkeeper-ocsp",
+  "crates/chainkeeper-cli",
+  "crates/chainkeeper-server",
+  "crates/chainkeeper-testkit",
+]
+
+[workspace.package]
+edition = "2024"
+rust-version = "1.99"
+publish = false
+version = "0.1.0"
+license = "Apache-2.0"
+repository = "https://github.com/ffimnsr/chainkeeper"
+authors = ["Edward Fitz Abucay <29743013+ffimnsr@users.noreply.github.com>"]
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+unused_must_use = "deny"
+
+[workspace.lints.clippy]
+all = "warn"
+pedantic = "warn"
+nursery = "warn"
+
+[workspace.dependencies]
+# Internal crates.
+chainkeeper-core = { path = "crates/chainkeeper-core" }
+chainkeeper-store = { path = "crates/chainkeeper-store" }
+chainkeeper-crypto = { path = "crates/chainkeeper-crypto" }
+chainkeeper-policy = { path = "crates/chainkeeper-policy" }
+chainkeeper-audit = { path = "crates/chainkeeper-audit" }
+chainkeeper-git = { path = "crates/chainkeeper-git" }
+chainkeeper-engine = { path = "crates/chainkeeper-engine" }
+chainkeeper-publish = { path = "crates/chainkeeper-publish" }
+chainkeeper-ocsp = { path = "crates/chainkeeper-ocsp" }
+chainkeeper-cli = { path = "crates/chainkeeper-cli" }
+chainkeeper-server = { path = "crates/chainkeeper-server" }
+chainkeeper-testkit = { path = "crates/chainkeeper-testkit" }
+
+# Third-party crates. Later phases may only add dependencies from this list.
+anyhow = "1"
+arc-swap = "1"
+assert_cmd = "2"
+axum = "0.8"
+clap = { version = "4", features = ["derive", "env", "string"] }
+comfy-table = "8"
+git2 = "0.21"
+inquire = "0.9"
+notify = "8"
+openssl = "0.10"
+predicates = "3"
+rand = "0.10"
+rasn-cms = "0.30"
+rasn-ocsp = "0.30"
+regex = "1"
+rusqlite = { version = "0.41", features = ["bundled"] }
+rusqlite_migration = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+serde_yaml_ng = "0.10"
+sha2 = "0.11"
+tempfile = "3"
+thiserror = "2"
+time = { version = "0.3", features = ["serde", "formatting", "parsing", "macros"] }
+tokio = { version = "1", features = ["full"] }
+toml = "1"
+tower-http = { version = "0.7", features = ["fs", "trace"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+ulid = { version = "3", features = ["serde"] }
+vergen-gix = { version = "10", features = ["cargo"] }
+x509-parser = "0.18"

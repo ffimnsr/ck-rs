@@ -1,0 +1,26 @@
+[package]
+name = "chainkeeper-cli"
+description = "Command line interface for Chainkeeper"
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[[bin]]
+name = "ck"
+path = "src/main.rs"
+
+[dependencies]
+anyhow = { workspace = true }
+chainkeeper-core = { workspace = true }
+clap = { workspace = true }
+tracing = { workspace = true }
+
+[build-dependencies]
+vergen-gix = { workspace = true }
+
+[lints]
+workspace = true

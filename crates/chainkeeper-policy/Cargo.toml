@@ -1,0 +1,16 @@
+[package]
+name = "chainkeeper-policy"
+description = "Policy and certificate profile engine for Chainkeeper"
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[dependencies]
+chainkeeper-core = { workspace = true }
+
+[lints]
+workspace = true

@@ -1,0 +1,31 @@
+[graph]
+all-features = true
+targets = []
+
+[advisories]
+yanked = "deny"
+# `serde_yaml_ng` is mandated by the decision matrix; it vendors the archived
+# `unsafe-libyaml` crate (RUSTSEC-2024-0449). Revisit when a safe YAML parser is
+# adopted.
+ignore = ["RUSTSEC-2024-0449"]
+
+[licenses]
+allow = [
+  "MIT",
+  "Apache-2.0",
+  "BSD-2-Clause",
+  "BSD-3-Clause",
+  "ISC",
+  "Unicode-3.0",
+  "Zlib",
+]
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
+
+[bans]
+multiple-versions = "warn"
+wildcards = "deny"
+# Workspace-internal crates are declared as path dependencies without versions.
+allow-wildcard-paths = true

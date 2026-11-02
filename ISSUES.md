@@ -15,7 +15,7 @@ The project is Chainkeeper. The reference documents describe Go, but this reposi
 ### Rules
 
 - Treat `docs/PLAN.md`, `docs/ARCHITECTURE.md`, and `docs/DESIGN.md` as immutable reference input. Do not edit them.
-- Implement Rust 2024 edition with MSRV `1.85`.
+- Implement Rust 2024 edition with MSRV `1.99`.
 - Use `ck` as the CLI binary, `ck-server` as the server binary, and `chainkeeper-*` as the workspace crate prefix.
 - Do not create a web UI, ACME, EST, CMP, LDAP, RBAC, approval workflow, online issuance, YubiKey, or PKCS#11 implementation in V1. Define the `Signer` trait only.
 - Every mutating operation must end with a Git commit. No mutating operation may leave uncommitted PKI state on success.
@@ -59,7 +59,7 @@ These decisions override ambiguities and contradictions in the reference documen
 | Crate prefix | `chainkeeper-` |
 | CLI binary | `ck` |
 | Server binary | `ck-server` |
-| Language | Rust 2024, MSRV 1.85 |
+| Language | Rust 2024, MSRV 1.99 |
 | Workspace | Multi-crate Cargo workspace, resolver 2, shared workspace lints |
 | CLI | `ck`, `clap` derive, `inquire` for TTY selection, `comfy-table` for tables |
 | Server | `ck-server`, `axum`, `tokio`, `tower-http` |
@@ -215,41 +215,41 @@ This phase does not implement PKI behavior. It defines the contracts that Phases
 
 ### Work Items
 
-- [ ] **1.1 Create the Cargo workspace**
-  - [ ] 1.1.1 Create root `Cargo.toml`.
+- [x] **1.1 Create the Cargo workspace**
+  - [x] 1.1.1 Create root `Cargo.toml`.
     - Set `[workspace] resolver = "2"`.
-    - Set `[workspace.package] edition = "2024"`, `rust-version = "1.85"`.
+    - Set `[workspace.package] edition = "2024"`, `rust-version = "1.99"`.
     - Add members: `crates/chainkeeper-core`, `crates/chainkeeper-store`, `crates/chainkeeper-crypto`, `crates/chainkeeper-policy`, `crates/chainkeeper-audit`, `crates/chainkeeper-git`, `crates/chainkeeper-engine`, `crates/chainkeeper-publish`, `crates/chainkeeper-ocsp`, `crates/chainkeeper-cli`, `crates/chainkeeper-server`, `crates/chainkeeper-testkit`.
     - Add `[workspace.lints.rust] unsafe_code = "forbid"`, `unused_must_use = "deny"`.
     - Add `[workspace.lints.clippy] all = "warn"`, `pedantic = "warn"`, `nursery = "warn"`.
     - Predeclare every third-party dependency listed in the Global Decision Matrix in `[workspace.dependencies]`.
-  - [ ] 1.1.2 Create `rustfmt.toml`.
+  - [x] 1.1.2 Create `rustfmt.toml`.
     - Set `edition = "2024"`, `max_width = 100`, `use_field_init_shorthand = true`, `imports_granularity = "Crate"`.
-  - [ ] 1.1.3 Create `clippy.toml`.
-    - Set `msrv = "1.85"`.
-  - [ ] 1.1.4 Create root `.gitignore` exactly as specified in the Global Decisions.
-  - [ ] 1.1.5 Create `deny.toml`.
+  - [x] 1.1.3 Create `clippy.toml`.
+    - Set `msrv = "1.99"`.
+  - [x] 1.1.4 Create root `.gitignore` exactly as specified in the Global Decisions.
+  - [x] 1.1.5 Create `deny.toml`.
     - Deny unknown registries, unknown git sources, yanked crates, and incompatible licenses.
     - Allow `MIT`, `Apache-2.0`, `BSD-2-Clause`, `BSD-3-Clause`, `ISC`, `Unicode-3.0`, `Zlib`.
-  - [ ] 1.1.6 Create `.github/workflows/ci.yml`.
+  - [x] 1.1.6 Create `.github/workflows/ci.yml`.
     - Add jobs for `fmt`, `clippy`, `test`, `doc`, `deny`, and `msrv`.
     - Use `cargo fmt --all --check`.
     - Use `cargo clippy --workspace --all-targets --all-features -- -D warnings`.
     - Use `cargo test --quiet --workspace --all-features`.
     - Use `RUSTDOCFLAGS="-D warnings" cargo doc --workspace --no-deps`.
     - Use `cargo deny check`.
-    - Run the MSRV job with Rust `1.85.0`.
+    - Run the MSRV job with Rust `1.99.0`.
 
-- [ ] **1.2 Create crate skeletons**
-  - [ ] 1.2.1 Create library crates.
+- [x] **1.2 Create crate skeletons**
+  - [x] 1.2.1 Create library crates.
     - Create `chainkeeper-core`, `chainkeeper-store`, `chainkeeper-crypto`, `chainkeeper-policy`, `chainkeeper-audit`, `chainkeeper-git`, `chainkeeper-engine`, `chainkeeper-publish`, `chainkeeper-ocsp`, and `chainkeeper-testkit`.
     - Each library crate contains `src/lib.rs` with `#![forbid(unsafe_code)]` and `#![warn(missing_debug_implementations)]`.
     - Each library crate sets `[lints] workspace = true`.
-  - [ ] 1.2.2 Create binary crates.
+  - [x] 1.2.2 Create binary crates.
     - Create `chainkeeper-cli` with `[[bin]] name = "ck"` and `src/main.rs`.
     - Create `chainkeeper-server` with `[[bin]] name = "ck-server"` and `src/main.rs`.
     - Binaries depend on `chainkeeper-core` and expose no public library API unless required for tests.
-  - [ ] 1.2.3 Add compile-time dependency direction guards.
+  - [x] 1.2.3 Add compile-time dependency direction guards.
     - `chainkeeper-store` depends on `chainkeeper-core` only.
     - `chainkeeper-crypto` depends on `chainkeeper-core` only.
     - `chainkeeper-policy` depends on `chainkeeper-core` only.
@@ -260,95 +260,95 @@ This phase does not implement PKI behavior. It defines the contracts that Phases
     - `chainkeeper-cli` and `chainkeeper-server` depend on `chainkeeper-core` and `chainkeeper-engine` factory signatures.
     - Add a test in `crates/chainkeeper-core/tests/dependency_direction.rs` that reads each crate's `Cargo.toml` and asserts the allowed dependency set.
 
-- [ ] **1.3 Define domain identifiers and primitives**
-  - [ ] 1.3.1 Implement `Serial`.
+- [x] **1.3 Define domain identifiers and primitives**
+  - [x] 1.3.1 Implement `Serial`.
     - Newtype around `String`.
     - Constructor accepts only `^[0-9A-F]{1,64}$`.
     - Reject empty, lowercase, odd-length, and path separators.
     - Implement `Display`, `FromStr`, `Serialize`, `Deserialize`.
-  - [ ] 1.3.2 Implement `AuthorityName`.
+  - [x] 1.3.2 Implement `AuthorityName`.
     - Newtype around `String`.
     - Constructor accepts only `^[a-z][a-z0-9-]{1,31}$`.
     - Reject `.`, `..`, `/`, `\`, and empty names.
-  - [ ] 1.3.3 Implement `ProfileName`, `TenantId`, and `EventId`.
+  - [x] 1.3.3 Implement `ProfileName`, `TenantId`, and `EventId`.
     - `ProfileName` follows the `AuthorityName` regex.
     - `TenantId` accepts `^[a-z][a-z0-9-]{1,63}$`.
     - `EventId` wraps a ULID string.
-  - [ ] 1.3.4 Implement `KeyAlgorithm`.
+  - [x] 1.3.4 Implement `KeyAlgorithm`.
     - Variants: `Rsa3072`, `EcdsaP256`, `Ed25519`.
     - Serde strings: `rsa3072`, `ecdsa-p256`, `ed25519`.
     - Include `default_for_profile(profile: &str) -> KeyAlgorithm`.
-  - [ ] 1.3.5 Implement `SignatureScheme`.
+  - [x] 1.3.5 Implement `SignatureScheme`.
     - Variants: `RsaPkcs1Sha256`, `EcdsaSha256`, `Ed25519`.
     - Map from `KeyAlgorithm` with a single total function.
-  - [ ] 1.3.6 Implement `RevocationReason`.
+  - [x] 1.3.6 Implement `RevocationReason`.
     - Variants matching the reference document: `unspecified`, `keyCompromise`, `caCompromise`, `affiliationChanged`, `superseded`, `cessationOfOperation`, `certificateHold`, `privilegeWithdrawn`, `aaCompromise`.
     - Map to the RFC 5280 reason code used by OpenSSL.
     - Reject `removeFromCrl` because V1 does not support unrevocation.
 
-- [ ] **1.4 Define configuration and record types**
-  - [ ] 1.4.1 Implement `TenantConfig`.
+- [x] **1.4 Define configuration and record types**
+  - [x] 1.4.1 Implement `TenantConfig`.
     - Fields: `version`, `tenant_id`, `display_name`, `created_at`, `default_profile`.
     - Add `ocsp_url`, `ca_issuers_url_template`, `crl_url_template`.
     - Validate URL templates contain `{authority}` where applicable.
-  - [ ] 1.4.2 Implement `Policy`.
+  - [x] 1.4.2 Implement `Policy`.
     - Fields: `version`, `max_validity_days`, `allowed_algorithms`, `allowed_profiles`, `allow_custom_oid`, `allow_wildcards`, `max_sans`, `allowed_san_suffixes`, `cn_must_match_san`.
     - Defaults: `max_validity_days = 397`, all three algorithms, all six profiles, `allow_custom_oid = true`, `allow_wildcards = false`, `max_sans = 100`, empty suffix list, `cn_must_match_san = true`.
-  - [ ] 1.4.3 Implement `Profile`.
+  - [x] 1.4.3 Implement `Profile`.
     - Fields: `name`, `version`, `authority`, `algorithm`, `validity_days`, `key_usage`, `eku`, `san_required`, `san_types`, `allow_custom_oid`.
     - Define `KeyUsage` and `ExtendedKeyUsage` enums with serde names exactly matching the reference documents.
-  - [ ] 1.4.4 Implement `AuthorityConfig`.
+  - [x] 1.4.4 Implement `AuthorityConfig`.
     - Fields: `name`, `kind`, `parent`, `algorithm`, `validity_days`, `path_len`, `key_usage`, `created_at`.
     - `AuthorityKind` variants: `Root`, `Intermediate`, `OcspSigner`.
-  - [ ] 1.4.5 Implement `CertificateRecord`.
+  - [x] 1.4.5 Implement `CertificateRecord`.
     - Fields: `serial`, `subject`, `issuer`, `profile`, `authority`, `algorithm`, `sans`, `ekus`, `key_usages`, `issued_at`, `expires_at`, `path`, `revoked_at`, `revocation_reason`, `replaces`.
-  - [ ] 1.4.6 Implement `CertificateStatus`.
+  - [x] 1.4.6 Implement `CertificateStatus`.
     - Variants: `Active`, `Revoked`, `Expired`.
     - Provide `derive(now, record) -> CertificateStatus` with precedence revoked, expired, active.
-  - [ ] 1.4.7 Implement `RevocationRecord`.
+  - [x] 1.4.7 Implement `RevocationRecord`.
     - Fields: `version`, `serial`, `authority`, `reason`, `comment`, `revoked_at`, `crl_number`.
-  - [ ] 1.4.8 Implement `AuditEvent` and `NewAuditEvent`.
+  - [x] 1.4.8 Implement `AuditEvent` and `NewAuditEvent`.
     - Fields: `id`, `seq`, `timestamp`, `action`, `object_type`, `object_id`, `summary`, `actor`, `details`.
     - `AuditAction` variants: `REPO_INITIALIZED`, `ROOT_CREATED`, `INTERMEDIATE_CREATED`, `OCSP_SIGNER_CREATED`, `CERT_ISSUED`, `CERT_REVOKED`, `CERT_REPLACED`, `CRL_GENERATED`, `PUBLISH_COMPLETED`, `POLICY_UPDATED`, `PROFILE_UPDATED`, `INDEX_REBUILT`.
-  - [ ] 1.4.9 Implement request/result types.
+  - [x] 1.4.9 Implement request/result types.
     - `InitRequest`, `CreateAuthorityRequest`, `CreateOcspSignerRequest`, `IssueRequest`, `RevokeRequest`, `SearchQuery`, `AuditQuery`, `PublishOptions`, `DiffRequest`.
     - `IssueRequest` fields include `profile`, `subject`, `sans`, `custom_extensions`, `algorithm`, `validity_days`, `csr_pem`, `key_out`, `replaces`.
     - `SubjectName` fields: `cn`, `organization`, `organizational_unit`, `country`, `state`, `locality`, `email`.
     - `San` enum variants: `Dns`, `Ip`, `Email`, `Uri`.
     - `CustomExtension` fields: `oid`, `critical`, `value_utf8`, `value_hex`; exactly one value field must be set.
-  - [ ] 1.4.10 Implement report types.
+  - [x] 1.4.10 Implement report types.
     - `InitReport`, `IssueReport`, `RevokeReport`, `InspectReport`, `TreeReport`, `AnalyzeReport`, `DoctorReport`, `DoctorFinding`, `Severity`, `DiffReport`, `IndexReport`.
     - `AnalyzeKind` variants: `Expirations`, `Revocations`, `Intermediates`, `Algorithms`, `Policy`.
     - `DoctorFinding` fields: `code`, `severity`, `message`, `object_id`.
-  - [ ] 1.4.11 Implement `PublishManifest` and `PublishArtifact`.
+  - [x] 1.4.11 Implement `PublishManifest` and `PublishArtifact`.
     - Fields include `version`, `generated_at`, `source_commit`, `tenant_id`, `artifacts`.
     - `PublishArtifact` fields: `path`, `sha256`, `bytes`.
-  - [ ] 1.4.12 Implement `ServerSnapshot` and `ServerHealth`.
+  - [x] 1.4.12 Implement `ServerSnapshot` and `ServerHealth`.
     - `ServerSnapshot` includes `repo_commit`, `manifest`, `certificates`, `revocations`, `authorities`, `crls`, `audit_events`.
     - `ServerHealth` includes `status`, `repo_commit`, `publish_commit`, `ocsp_ready`, `errors`.
 
-- [ ] **1.5 Define the frozen trait contracts**
-  - [ ] 1.5.1 Define `Clock`.
+- [x] **1.5 Define the frozen trait contracts**
+  - [x] 1.5.1 Define `Clock`.
     - `fn now(&self) -> OffsetDateTime`.
     - `SystemClock` returns real UTC time.
     - `FixedClock` lives in `chainkeeper-testkit` only.
-  - [ ] 1.5.2 Define `IdGenerator`.
+  - [x] 1.5.2 Define `IdGenerator`.
     - `fn ulid(&self) -> String`.
     - `fn serial(&self) -> Serial`.
     - Production implementation uses `rand` and `ulid`.
-  - [ ] 1.5.3 Define `Signer`.
+  - [x] 1.5.3 Define `Signer`.
     - `fn algorithm(&self) -> KeyAlgorithm`.
     - `fn public_key_der(&self) -> Result<Vec<u8>>`.
     - `fn sign(&self, message: &[u8], scheme: SignatureScheme) -> Result<Vec<u8>>`.
     - Document that HSM implementations will implement this trait without changing callers.
-  - [ ] 1.5.4 Define `CertificateProvider`.
+  - [x] 1.5.4 Define `CertificateProvider`.
     - `fn generate_key(&self, alg: KeyAlgorithm) -> Result<KeyMaterial>`.
     - `fn create_root(&self, req: &CreateAuthorityRequest, signer: &dyn Signer) -> Result<AuthorityBundle>`.
     - `fn create_intermediate(&self, req: &CreateAuthorityRequest, parent: &AuthorityMaterial, parent_signer: &dyn Signer) -> Result<AuthorityBundle>`.
     - `fn create_ocsp_signer(&self, req: &CreateOcspSignerRequest, parent: &AuthorityMaterial, parent_signer: &dyn Signer) -> Result<SignerBundle>`.
     - `fn issue(&self, req: &IssueRequest, signer: &dyn Signer) -> Result<IssuedCertificate>`.
     - `fn generate_crl(&self, req: &CrlRequest, signer: &dyn Signer) -> Result<CrlBundle>`.
-  - [ ] 1.5.5 Define `CertificateStore`.
+  - [x] 1.5.5 Define `CertificateStore`.
     - `fn load_tenant(&self) -> Result<TenantConfig>`.
     - `fn load_policy(&self) -> Result<Policy>`.
     - `fn load_profiles(&self) -> Result<Vec<Profile>>`.
@@ -361,142 +361,142 @@ This phase does not implement PKI behavior. It defines the contracts that Phases
     - `fn write_authority(&self, bundle: &AuthorityBundle) -> Result<()>`.
     - `fn load_authority(&self, name: &AuthorityName) -> Result<Option<AuthorityMaterial>>`.
     - `fn list_authorities(&self) -> Result<Vec<AuthorityRecord>>`.
-  - [ ] 1.5.6 Define `IndexStore`.
+  - [x] 1.5.6 Define `IndexStore`.
     - `fn open(path: &Path) -> Result<Self>` is not object-safe; instead define `fn rebuild(&self, records: &IndexRecords) -> Result<IndexReport>` and `fn query(&self, query: &SearchQuery) -> Result<Vec<CertificateRecord>>`.
     - Add methods `upsert_certificate`, `upsert_revocation`, `upsert_authority`, `upsert_audit_event`, `list_audit`, `stats`, `schema_version`.
-  - [ ] 1.5.7 Define `ProfileRegistry`.
+  - [x] 1.5.7 Define `ProfileRegistry`.
     - `fn get(&self, name: &ProfileName) -> Result<Profile>`.
     - `fn list(&self) -> Vec<Profile>`.
     - `fn validate(&self, profile: &Profile) -> Result<()>`.
-  - [ ] 1.5.8 Define `PolicyEngine`.
+  - [x] 1.5.8 Define `PolicyEngine`.
     - `fn validate_issue(&self, policy: &Policy, profile: &Profile, request: &IssueRequest) -> Result<()>`.
     - `fn validate_custom_extension(&self, policy: &Policy, ext: &CustomExtension) -> Result<()>`.
     - `fn validate_profile(&self, policy: &Policy, profile: &Profile) -> Result<()>`.
-  - [ ] 1.5.9 Define `AuditLog`.
+  - [x] 1.5.9 Define `AuditLog`.
     - `fn append(&self, event: NewAuditEvent) -> Result<AuditEvent>`.
     - `fn list(&self, query: &AuditQuery) -> Result<Vec<AuditEvent>>`.
     - `fn next_seq(&self) -> Result<u64>`.
-  - [ ] 1.5.10 Define `GitRepository`.
+  - [x] 1.5.10 Define `GitRepository`.
     - `fn init(&self, path: &Path) -> Result<()>`.
     - `fn head_commit(&self) -> Result<String>`.
     - `fn commit(&self, message: &str, paths: &[PathBuf]) -> Result<String>`.
     - `fn diff(&self, from: &str, to: &str) -> Result<Vec<GitChange>>`.
     - `fn status(&self) -> Result<GitStatus>`.
     - `fn is_clean(&self) -> Result<bool>`.
-  - [ ] 1.5.11 Define `RepositoryLock`.
+  - [x] 1.5.11 Define `RepositoryLock`.
     - `fn acquire_exclusive(&self, timeout: Duration) -> Result<LockGuard>`.
     - `LockGuard` releases on drop.
-  - [ ] 1.5.12 Define `CrlManager`.
+  - [x] 1.5.12 Define `CrlManager`.
     - `fn update_for_authority(&self, authority: &AuthorityName) -> Result<CrlBundle>`.
     - `fn list_crls(&self) -> Result<Vec<CrlRecord>>`.
-  - [ ] 1.5.13 Define `PublishBuilder`.
+  - [x] 1.5.13 Define `PublishBuilder`.
     - `fn build(&self, options: &PublishOptions) -> Result<PublishManifest>`.
     - `fn validate_publish_dir(&self, path: &Path) -> Result<()>`.
-  - [ ] 1.5.14 Define `OcspResponder`.
+  - [x] 1.5.14 Define `OcspResponder`.
     - `fn respond(&self, request_der: &[u8]) -> Result<Vec<u8>>`.
     - `fn reload(&self) -> Result<()>`.
     - `fn ready(&self) -> bool`.
-  - [ ] 1.5.15 Define `ChainkeeperService`.
+  - [x] 1.5.15 Define `ChainkeeperService`.
     - Methods: `init`, `create_root`, `create_intermediate`, `create_ocsp_signer`, `issue`, `revoke`, `inspect`, `search`, `tree`, `analyze`, `audit`, `doctor`, `diff`, `publish`, `rebuild_index`.
     - Each method takes `&self` and returns the matching report type.
-  - [ ] 1.5.16 Define `ServerStateProvider`.
+  - [x] 1.5.16 Define `ServerStateProvider`.
     - `fn snapshot(&self) -> Arc<ServerSnapshot>`.
     - `fn reload(&self) -> Result<Arc<ServerSnapshot>>`.
     - `fn health(&self) -> ServerHealth`.
-  - [ ] 1.5.17 Add a contract test that constructs every trait as `Arc<dyn Trait>`.
+  - [x] 1.5.17 Add a contract test that constructs every trait as `Arc<dyn Trait>`.
     - The test lives in `crates/chainkeeper-core/tests/object_safety.rs`.
     - It uses `chainkeeper-testkit` fakes for each trait.
 
-- [ ] **1.6 Define errors**
-  - [ ] 1.6.1 Create `ChainkeeperError` in `chainkeeper-core`.
+- [x] **1.6 Define errors**
+  - [x] 1.6.1 Create `ChainkeeperError` in `chainkeeper-core`.
     - Variants: `Config`, `Validation`, `Policy`, `Profile`, `Crypto`, `Storage`, `Index`, `Audit`, `Git`, `Lock`, `Publish`, `Ocsp`, `NotFound`, `AlreadyExists`, `Conflict`, `NotImplemented`, `Io`.
     - Include `message`, optional `source`, and optional `object_id`.
-  - [ ] 1.6.2 Implement `exit_code()`.
+  - [x] 1.6.2 Implement `exit_code()`.
     - `0` success outside the error type.
     - `1` for operation, validation, policy, crypto, storage, index, audit, git, publish, OCSP, not-found, conflict, I/O.
     - `2` is reserved for CLI usage errors produced by `clap`.
     - `3` for doctor findings reporting errors.
-  - [ ] 1.6.3 Add `Context` helpers.
+  - [x] 1.6.3 Add `Context` helpers.
     - `ChainkeeperError::with_context(self, message: impl Into<String>) -> Self`.
     - `ChainkeeperError::not_found(object: &str, id: &str)`.
-  - [ ] 1.6.4 Add a test asserting stable display strings for every variant.
+  - [x] 1.6.4 Add a test asserting stable display strings for every variant.
     - Use `insta` only if the project already adopted it; otherwise assert exact `format!` output.
 
-- [ ] **1.7 Define filesystem layout helpers**
-  - [ ] 1.7.1 Create `RepositoryPaths`.
+- [x] **1.7 Define filesystem layout helpers**
+  - [x] 1.7.1 Create `RepositoryPaths`.
     - Fields for every path in the Repository Layout Decision.
     - Constructor validates root is a directory.
     - Methods return `PathBuf`; no method accepts raw user segments.
-  - [ ] 1.7.2 Implement safe segment builders.
+  - [x] 1.7.2 Implement safe segment builders.
     - `certificate_path(serial, ext)`, `revocation_path(serial)`, `authority_path(name, file)`, `audit_event_path(ulid)`, `crl_path(authority, ext)`.
     - Each builder validates its newtype before joining.
-  - [ ] 1.7.3 Implement `atomic_write`.
+  - [x] 1.7.3 Implement `atomic_write`.
     - Accept destination, bytes, and mode.
     - Create a `tempfile::NamedTempFile` in the destination parent.
     - Write, `sync_all`, persist over destination.
     - On Unix set mode `0600` for keys and `0644` for public artifacts.
-  - [ ] 1.7.4 Add traversal tests.
+  - [x] 1.7.4 Add traversal tests.
     - Assert `Serial::from_str("../etc/passwd")`, `AuthorityName::from_str("..")`, and `ProfileName::from_str("a/b")` fail.
     - Assert every path builder stays under repository root for valid inputs.
 
-- [ ] **1.8 Create `chainkeeper-testkit`**
-  - [ ] 1.8.1 Implement `FakeClock`.
+- [x] **1.8 Create `chainkeeper-testkit`**
+  - [x] 1.8.1 Implement `FakeClock`.
     - Stores an `OffsetDateTime` behind `RwLock`; exposes `set`, `advance`.
     - Implements `Clock`.
-  - [ ] 1.8.2 Implement `FakeIdGenerator`.
+  - [x] 1.8.2 Implement `FakeIdGenerator`.
     - Produces deterministic serials `00000000000000000000000000000001`, `...02`, and ULIDs `01J00000000000000000000001`.
     - Uses a per-instance `AtomicU64`; no global state.
-  - [ ] 1.8.3 Implement `InMemoryCertificateStore`.
+  - [x] 1.8.3 Implement `InMemoryCertificateStore`.
     - Stores tenants, policies, profiles, authorities, certificates, and revocations in `RwLock` maps.
     - Enforces serial uniqueness and path validation.
-  - [ ] 1.8.4 Implement `FakeCertificateProvider`.
+  - [x] 1.8.4 Implement `FakeCertificateProvider`.
     - Produces deterministic PEM fixtures from checked-in test fixtures.
     - Supports success and configurable failure injection per method.
-  - [ ] 1.8.5 Implement `FakeSigner`.
+  - [x] 1.8.5 Implement `FakeSigner`.
     - Returns deterministic signatures derived from `sha2::Sha256(message)`.
-  - [ ] 1.8.6 Implement `InMemoryAuditLog`.
+  - [x] 1.8.6 Implement `InMemoryAuditLog`.
     - Appends to a vector and rejects duplicate event IDs.
-  - [ ] 1.8.7 Implement `InMemoryGitRepository`.
+  - [x] 1.8.7 Implement `InMemoryGitRepository`.
     - Stores commits in memory, returns deterministic OIDs, and tracks changed paths.
-  - [ ] 1.8.8 Implement `FakeOcspResponder` and `FakePublishBuilder`.
-  - [ ] 1.8.9 Implement `TempTenant`.
+  - [x] 1.8.8 Implement `FakeOcspResponder` and `FakePublishBuilder`.
+  - [x] 1.8.9 Implement `TempTenant`.
     - Creates a `tempfile::TempDir`, writes the default layout, returns `RepositoryPaths`.
     - Includes unique pid plus monotonic counter in the temp directory prefix.
-  - [ ] 1.8.10 Implement fixture builders.
+  - [x] 1.8.10 Implement fixture builders.
     - Build valid root, intermediate, OCSP signer, and leaf certificate fixtures with `openssl` crate at test time.
     - Do not depend on pre-existing files outside the test temp directory.
-  - [ ] 1.8.11 Add a test that runs two `TempTenant` instances in parallel and asserts no shared paths or state.
+  - [x] 1.8.11 Add a test that runs two `TempTenant` instances in parallel and asserts no shared paths or state.
 
-- [ ] **1.9 Add contract tests**
-  - [ ] 1.9.1 Add serialization round-trip tests for every config and record type.
-  - [ ] 1.9.2 Add YAML unknown-field rejection tests.
-  - [ ] 1.9.3 Add default-value tests for `Policy`, `Profile`, and all six built-in profile defaults.
-  - [ ] 1.9.4 Add trait object-safety tests.
-  - [ ] 1.9.5 Add error display and exit-code tests.
+- [x] **1.9 Add contract tests**
+  - [x] 1.9.1 Add serialization round-trip tests for every config and record type.
+  - [x] 1.9.2 Add YAML unknown-field rejection tests.
+  - [x] 1.9.3 Add default-value tests for `Policy`, `Profile`, and all six built-in profile defaults.
+  - [x] 1.9.4 Add trait object-safety tests.
+  - [x] 1.9.5 Add error display and exit-code tests.
 
-- [ ] **1.10 Add build metadata and diagnostics**
-  - [ ] 1.10.1 Add `vergen-gix` build metadata to `ck` and `ck-server`.
+- [x] **1.10 Add build metadata and diagnostics**
+  - [x] 1.10.1 Add `vergen-gix` build metadata to `ck` and `ck-server`.
     - Expose `--version` with version, commit SHA, and target triple.
-  - [ ] 1.10.2 Add `tracing-subscriber` initialization helper in `chainkeeper-core`.
+  - [x] 1.10.2 Add `tracing-subscriber` initialization helper in `chainkeeper-core`.
     - JSON output when `CHAINKEEPER_LOG_FORMAT=json`.
     - Human output otherwise.
     - Default filter `info`.
-  - [ ] 1.10.3 Add `--no-color` support at the CLI layer only.
+  - [x] 1.10.3 Add `--no-color` support at the CLI layer only.
     - Do not add color logic to library crates.
 
 ### Acceptance Criteria
 
-- [ ] `cargo metadata --no-deps --format-version 1` lists all twelve workspace crates.
-- [ ] `cargo test --quiet -p chainkeeper-core` passes.
-- [ ] `cargo test --quiet -p chainkeeper-testkit` passes.
-- [ ] `cargo test --quiet --workspace` passes with all stub crates.
-- [ ] `cargo fmt --all --check` passes.
-- [ ] `cargo clippy --workspace --all-targets --all-features -- -D warnings` passes.
-- [ ] `RUSTDOCFLAGS="-D warnings" cargo doc --workspace --no-deps` passes.
-- [ ] `cargo deny check` passes.
-- [ ] A test asserts every public trait is usable as `Arc<dyn Trait>`.
-- [ ] A test asserts all path builders reject traversal inputs.
-- [ ] A test asserts all fixtures are isolated per `TempTenant` and pass under parallel test execution.
+- [x] `cargo metadata --no-deps --format-version 1` lists all twelve workspace crates.
+- [x] `cargo test --quiet -p chainkeeper-core` passes.
+- [x] `cargo test --quiet -p chainkeeper-testkit` passes.
+- [x] `cargo test --quiet --workspace` passes with all stub crates.
+- [x] `cargo fmt --all --check` passes.
+- [x] `cargo clippy --workspace --all-targets --all-features -- -D warnings` passes.
+- [x] `RUSTDOCFLAGS="-D warnings" cargo doc --workspace --no-deps` passes.
+- [x] `cargo deny check` passes.
+- [x] A test asserts every public trait is usable as `Arc<dyn Trait>`.
+- [x] A test asserts all path builders reject traversal inputs.
+- [x] A test asserts all fixtures are isolated per `TempTenant` and pass under parallel test execution.
 
 ---
 

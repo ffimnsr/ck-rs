@@ -1,0 +1,21 @@
+[package]
+name = "chainkeeper-testkit"
+description = "Deterministic test doubles for Chainkeeper contracts"
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[dependencies]
+chainkeeper-core = { workspace = true }
+openssl = { workspace = true }
+serde_json = { workspace = true }
+sha2 = { workspace = true }
+tempfile = { workspace = true }
+time = { workspace = true }
+
+[lints]
+workspace = true

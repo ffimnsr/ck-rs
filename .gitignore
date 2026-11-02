@@ -2,3 +2,11 @@
 !/README.md
 !/ISSUES.md
 !/CHANGELOG.md
+
+# Chainkeeper runtime artifacts
+/target/
+/cache/
+/.chainkeeper/
+authorities/**/key.pem
+certificates/**/*.key.pem
+*.key
