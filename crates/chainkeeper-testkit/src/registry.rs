@@ -296,6 +296,7 @@ impl IndexStore for InMemoryIndexStore {
             generated_at: self.now,
             schema_version: self.schema_version()?,
             stats,
+            moved: Vec::new(),
         })
     }
 
@@ -326,7 +327,11 @@ impl IndexStore for InMemoryIndexStore {
             .filter(|record| {
                 query.expires_within_days.is_none_or(|days| {
                     let limit = self.now + TimeDuration::days(i64::from(days));
-                    record.expires_at <= limit
+                    let within_window = record.expires_at <= limit;
+                    let include_expired = query.include_expired
+                        || query.status == Some(chainkeeper_core::CertificateStatus::Expired)
+                        || record.expires_at > self.now;
+                    within_window && include_expired
                 })
             })
             .filter(|record| {
@@ -339,6 +344,14 @@ impl IndexStore for InMemoryIndexStore {
             .cloned()
             .collect();
         drop(certificates);
+        selected.sort_by(|left, right| {
+            left.expires_at
+                .cmp(&right.expires_at)
+                .then_with(|| left.serial.cmp(&right.serial))
+        });
+        if query.offset > 0 {
+            selected.drain(..query.offset.min(selected.len()));
+        }
         if let Some(limit) = query.limit {
             selected.truncate(limit);
         }
@@ -392,6 +405,14 @@ impl IndexStore for InMemoryIndexStore {
             selected.truncate(limit);
         }
         Ok(selected)
+    }
+
+    fn count(&self, query: &SearchQuery) -> Result<u64, ChainkeeperError> {
+        let mut unbounded = query.clone();
+        unbounded.limit = None;
+        unbounded.offset = 0;
+        let results = self.query(&unbounded)?;
+        Ok(u64::try_from(results.len()).unwrap_or(u64::MAX))
     }
 
     fn stats(&self) -> Result<IndexStats, ChainkeeperError> {
@@ -628,6 +649,7 @@ impl ChainkeeperService for FakeChainkeeperService {
             generated_at: self.now,
             schema_version: chainkeeper_core::CONFIG_VERSION,
             stats: IndexStats::default(),
+            moved: Vec::new(),
         })
     }
 }

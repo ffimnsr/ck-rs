@@ -29,7 +29,7 @@ pub use crypto::{KeyAlgorithm, SignatureScheme};
 pub use error::{ChainkeeperError, ErrorDetail, ErrorKind, ErrorSource};
 pub use ids::{AuthorityName, EventId, ProductionIdGenerator, ProfileName, Serial, TenantId};
 pub use logging::{init_tracing, init_tracing_with_default};
-pub use paths::{FileMode, RepositoryPaths, atomic_write};
+pub use paths::{FileMode, RepositoryPaths, atomic_write, atomic_write_new};
 pub use profile::{
     ExtendedKeyUsage, KeyUsage, Profile, SanType, builtin_profile, builtin_profile_names,
     builtin_profiles,
@@ -41,7 +41,7 @@ pub use publish::{
 pub use records::{
     AuditAction, AuditEvent, AuthorityBundle, AuthorityMaterial, AuthorityRecord,
     CertificateRecord, CertificateStatus, CrlBundle, CrlRecord, CrlRequest, GitChange,
-    GitChangeKind, GitStatus, IndexRecords, IndexStats, IssuedCertificate, KeyMaterial,
+    GitChangeKind, GitStatus, IndexRecords, IndexStats, IndexedCrl, IssuedCertificate, KeyMaterial,
     NewAuditEvent, RevocationReason, RevocationRecord, SignerBundle,
 };
 pub use report::{

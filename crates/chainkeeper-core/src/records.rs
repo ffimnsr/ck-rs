@@ -10,7 +10,7 @@ use crate::config::{AuthorityConfig, AuthorityKind};
 use crate::crypto::KeyAlgorithm;
 use crate::error::ChainkeeperError;
 use crate::ids::{AuthorityName, EventId, ProfileName, Serial};
-use crate::profile::{ExtendedKeyUsage, KeyUsage};
+use crate::profile::{ExtendedKeyUsage, KeyUsage, Profile};
 use crate::request::{San, SubjectName};
 
 /// RFC 5280 CRL reason code.
@@ -672,6 +672,15 @@ pub struct CrlBundle {
     pub pem: String,
 }
 
+/// CRL metadata paired with the digest of its DER encoding.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct IndexedCrl {
+    /// CRL metadata read from `crls/<authority>.yaml`.
+    pub record: CrlRecord,
+    /// Lowercase hexadecimal SHA-256 of the DER encoded CRL.
+    pub sha256: String,
+}
+
 /// Everything the index needs to rebuild from the filesystem.
 #[derive(Debug, Clone, Default, PartialEq)]
 pub struct IndexRecords {
@@ -681,6 +690,10 @@ pub struct IndexRecords {
     pub revocations: Vec<RevocationRecord>,
     /// Authorities discovered on disk.
     pub authorities: Vec<AuthorityRecord>,
+    /// Profiles discovered on disk.
+    pub profiles: Vec<Profile>,
+    /// CRLs discovered on disk.
+    pub crls: Vec<IndexedCrl>,
     /// Audit events discovered on disk.
     pub audit_events: Vec<AuditEvent>,
 }

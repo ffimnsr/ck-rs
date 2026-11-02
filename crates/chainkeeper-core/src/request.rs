@@ -385,8 +385,14 @@ pub struct SearchQuery {
     pub authority: Option<AuthorityName>,
     /// Restrict to certificates expiring within this many days.
     pub expires_within_days: Option<u32>,
+    /// Include expired certificates in expiry-window queries.
+    #[serde(default)]
+    pub include_expired: bool,
     /// Maximum number of results.
     pub limit: Option<usize>,
+    /// Number of matching rows to skip.
+    #[serde(default)]
+    pub offset: usize,
 }
 
 /// Filter used by `ck audit`.

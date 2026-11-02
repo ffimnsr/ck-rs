@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 use time::OffsetDateTime;
 
 use crate::config::AuthorityKind;
-use crate::ids::{AuthorityName, TenantId};
+use crate::ids::{AuthorityName, Serial, TenantId};
 use crate::records::{
     CertificateRecord, CertificateStatus, CrlRecord, IndexStats, RevocationRecord,
 };
@@ -199,6 +199,9 @@ pub struct IndexReport {
     pub schema_version: u32,
     /// Row counts written to the index.
     pub stats: IndexStats,
+    /// Serials moved by a repair run.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub moved: Vec<Serial>,
 }
 
 #[cfg(test)]

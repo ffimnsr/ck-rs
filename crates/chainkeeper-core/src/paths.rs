@@ -119,6 +119,84 @@ pub fn atomic_write(
     Ok(())
 }
 
+/// Atomically writes `bytes` to `destination`, failing when it exists.
+///
+/// Like [`atomic_write`], the bytes are written to a temporary file in the
+/// destination directory and persisted without overwriting an existing file.
+/// Use this for append-only records whose file names are unique identifiers.
+///
+/// # Errors
+///
+/// Returns [`ChainkeeperError::AlreadyExists`] when `destination` already
+/// exists, or [`ChainkeeperError::Storage`] on any other failure.
+pub fn atomic_write_new(
+    destination: &Path,
+    bytes: &[u8],
+    mode: FileMode,
+) -> Result<(), ChainkeeperError> {
+    let parent = destination.parent().ok_or_else(|| {
+        ChainkeeperError::storage(format!(
+            "destination {} has no parent directory",
+            destination.display()
+        ))
+    })?;
+
+    let mut temporary = tempfile::NamedTempFile::new_in(parent).map_err(|error| {
+        ChainkeeperError::storage(format!(
+            "could not create temporary file in {}: {error}",
+            parent.display()
+        ))
+    })?;
+    temporary.write_all(bytes).map_err(|error| {
+        ChainkeeperError::storage(format!(
+            "could not write temporary file in {}: {error}",
+            parent.display()
+        ))
+    })?;
+    temporary.as_file().sync_all().map_err(|error| {
+        ChainkeeperError::storage(format!(
+            "could not flush temporary file in {}: {error}",
+            parent.display()
+        ))
+    })?;
+
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt as _;
+
+        std::fs::set_permissions(
+            temporary.path(),
+            std::fs::Permissions::from_mode(mode.unix_mode()),
+        )
+        .map_err(|error| {
+            ChainkeeperError::storage(format!(
+                "could not set permissions on temporary file: {error}"
+            ))
+        })?;
+    }
+
+    temporary.persist_noclobber(destination).map_err(|error| {
+        if error.error.kind() == std::io::ErrorKind::AlreadyExists {
+            ChainkeeperError::already_exists(format!("{} already exists", destination.display()))
+        } else {
+            ChainkeeperError::storage(format!(
+                "could not persist {}: {}",
+                destination.display(),
+                error.error
+            ))
+        }
+    })?;
+
+    #[cfg(unix)]
+    {
+        if let Ok(directory) = std::fs::File::open(parent) {
+            let _ = directory.sync_all();
+        }
+    }
+
+    Ok(())
+}
+
 /// Paths inside one Chainkeeper repository.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct RepositoryPaths {

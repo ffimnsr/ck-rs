@@ -313,6 +313,13 @@ pub trait IndexStore: Send + Sync {
     /// Returns [`ChainkeeperError::Index`] on query failure.
     fn list_audit(&self, query: &AuditQuery) -> Result<Vec<AuditEvent>, ChainkeeperError>;
 
+    /// Counts indexed certificates matching the query, ignoring pagination.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`ChainkeeperError::Index`] on query failure.
+    fn count(&self, query: &SearchQuery) -> Result<u64, ChainkeeperError>;
+
     /// Returns row counts.
     ///
     /// # Errors

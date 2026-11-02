@@ -523,52 +523,52 @@ This phase owns `chainkeeper-store`. It has no dependency on cryptographic issua
 
 ### Work Items
 
-- [ ] **2.1 Implement repository layout operations**
-  - [ ] 2.1.1 Implement `init_layout`.
+- [x] **2.1 Implement repository layout operations**
+  - [x] 2.1.1 Implement `init_layout`.
     - Create every directory from the Repository Layout Decision.
     - Create empty `revocations/`, `crls/`, `audit/events/`, `publish/`, `cache/`.
     - Do not create private keys.
-  - [ ] 2.1.2 Implement `write_tenant`, `write_policy`, `write_profile`, and `load_*`.
+  - [x] 2.1.2 Implement `write_tenant`, `write_policy`, `write_profile`, and `load_*`.
     - Serialize YAML with `version: 1`.
     - Validate on write and on load.
-  - [ ] 2.1.3 Implement authority material writes.
+  - [x] 2.1.3 Implement authority material writes.
     - Write `cert.pem`, `chain.pem`, `authority.yaml`.
     - Write `key.pem` only when supplied and mode `0600`.
     - Reject writes when a different authority with the same name already exists and the certificate differs.
-  - [ ] 2.1.4 Implement certificate writes.
+  - [x] 2.1.4 Implement certificate writes.
     - Write `<SERIAL>.pem`, `<SERIAL>.yaml`, and optional `<SERIAL>.key.pem`.
     - Validate the PEM serial matches the metadata serial.
     - Reject duplicate serials.
-  - [ ] 2.1.5 Implement certificate moves.
+  - [x] 2.1.5 Implement certificate moves.
     - Move `active` to `revoked` or `expired` with `std::fs::rename` inside the repository.
     - Move the `.pem`, `.yaml`, and optional `.key.pem` together.
     - Abort the operation if any source is missing.
-  - [ ] 2.1.6 Implement revocation writes.
+  - [x] 2.1.6 Implement revocation writes.
     - Write `revocations/<SERIAL>.yaml` with `create_new`.
     - Reject duplicate revocation records.
-  - [ ] 2.1.7 Implement CRL writes.
+  - [x] 2.1.7 Implement CRL writes.
     - Write `crls/<authority>.crl.der`, `.crl.pem`, `.yaml`, and `.number`.
     - Increment `.number` atomically using `atomic_write`.
-  - [ ] 2.1.8 Implement audit event path writes.
+  - [x] 2.1.8 Implement audit event path writes.
     - Write `audit/events/<ULID>.json` with `create_new`.
     - Reject duplicate IDs.
-  - [ ] 2.1.9 Implement `list_certificates`, `list_revocations`, `list_authorities`, and `list_audit_events`.
+  - [x] 2.1.9 Implement `list_certificates`, `list_revocations`, `list_authorities`, and `list_audit_events`.
     - Scan directories in deterministic lexical order.
     - Skip temp files and hidden files.
 
-- [ ] **2.2 Implement file locking**
-  - [ ] 2.2.1 Implement `FileRepositoryLock` using `fs2`.
+- [x] **2.2 Implement file locking**
+  - [x] 2.2.1 Implement `FileRepositoryLock` using `fs2`.
     - Lock file at `.chainkeeper/lock`.
     - Create `.chainkeeper/` with mode `0700`.
     - Support timeout using bounded retry with 25 ms sleep.
-  - [ ] 2.2.2 Implement `LockGuard` with RAII release.
-  - [ ] 2.2.3 Add tests.
+  - [x] 2.2.2 Implement `LockGuard` with RAII release.
+  - [x] 2.2.3 Add tests.
     - Two processes or threads contend for the lock; second times out.
     - Lock releases on drop and after panic.
     - Test uses a unique temp path.
 
-- [ ] **2.3 Implement SQLite schema and migrations**
-  - [ ] 2.3.1 Create migration `0001_initial.sql`.
+- [x] **2.3 Implement SQLite schema and migrations**
+  - [x] 2.3.1 Create migration `0001_initial.sql`.
     - Enable `PRAGMA journal_mode=WAL`, `foreign_keys=ON`, `synchronous=NORMAL`.
     - Table `meta(key TEXT PRIMARY KEY, value TEXT NOT NULL)`.
     - Table `certificates`.
@@ -578,74 +578,74 @@ This phase owns `chainkeeper-store`. It has no dependency on cryptographic issua
     - Table `audit_events`.
     - Table `crls`.
     - FTS5 table `certificates_fts`.
-  - [ ] 2.3.2 Define `certificates` columns.
+  - [x] 2.3.2 Define `certificates` columns.
     - `id INTEGER PRIMARY KEY`, `serial TEXT NOT NULL UNIQUE`, `subject TEXT NOT NULL`, `issuer TEXT NOT NULL`, `profile TEXT NOT NULL`, `authority TEXT NOT NULL`, `algorithm TEXT NOT NULL`, `status TEXT NOT NULL`, `issued_at TEXT NOT NULL`, `expires_at TEXT NOT NULL`, `path TEXT NOT NULL`, `sans_json TEXT NOT NULL`, `email TEXT`, `eku_json TEXT NOT NULL`, `key_usage_json TEXT NOT NULL`, `revoked_at TEXT`, `revocation_reason TEXT`, `replaces TEXT`.
     - Create indexes on `status`, `profile`, `authority`, `expires_at`, `subject`, and `email`.
-  - [ ] 2.3.3 Define `revocations` columns.
+  - [x] 2.3.3 Define `revocations` columns.
     - `id INTEGER PRIMARY KEY`, `certificate_id INTEGER NOT NULL REFERENCES certificates(id)`, `serial TEXT NOT NULL UNIQUE`, `authority TEXT NOT NULL`, `reason TEXT NOT NULL`, `comment TEXT NOT NULL DEFAULT ''`, `revoked_at TEXT NOT NULL`, `crl_number INTEGER`.
-  - [ ] 2.3.4 Define `intermediates` columns.
+  - [x] 2.3.4 Define `intermediates` columns.
     - `id INTEGER PRIMARY KEY`, `name TEXT NOT NULL UNIQUE`, `kind TEXT NOT NULL`, `parent TEXT`, `algorithm TEXT NOT NULL`, `not_before TEXT NOT NULL`, `not_after TEXT NOT NULL`, `path TEXT NOT NULL`.
-  - [ ] 2.3.5 Define `profiles` columns.
+  - [x] 2.3.5 Define `profiles` columns.
     - `name TEXT PRIMARY KEY`, `authority TEXT NOT NULL`, `algorithm TEXT NOT NULL`, `validity_days INTEGER NOT NULL`, `yaml_sha256 TEXT NOT NULL`.
-  - [ ] 2.3.6 Define `audit_events` columns.
+  - [x] 2.3.6 Define `audit_events` columns.
     - `id TEXT PRIMARY KEY`, `seq INTEGER NOT NULL UNIQUE`, `timestamp TEXT NOT NULL`, `action TEXT NOT NULL`, `object_type TEXT NOT NULL`, `object_id TEXT NOT NULL`, `summary TEXT NOT NULL`, `path TEXT NOT NULL`.
-  - [ ] 2.3.7 Define `crls` columns.
+  - [x] 2.3.7 Define `crls` columns.
     - `authority TEXT PRIMARY KEY`, `crl_number INTEGER NOT NULL`, `this_update TEXT NOT NULL`, `next_update TEXT NOT NULL`, `revoked_count INTEGER NOT NULL`, `path TEXT NOT NULL`, `sha256 TEXT NOT NULL`.
-  - [ ] 2.3.8 Create FTS5 index.
+  - [x] 2.3.8 Create FTS5 index.
     - `certificates_fts(serial, subject, sans, email, profile)`.
     - Use a standalone FTS table maintained by the indexer, not external-content triggers.
     - Rebuild FTS rows inside the same transaction as certificate upserts.
-  - [ ] 2.3.9 Implement schema version checks.
+  - [x] 2.3.9 Implement schema version checks.
     - Store schema version in `meta('schema_version')`.
     - On mismatch, run migrations up to the current version.
     - On unsupported newer version, return `ChainkeeperError::Index`.
-  - [ ] 2.3.10 Add migration tests.
+  - [x] 2.3.10 Add migration tests.
     - Open an empty database and assert all tables exist.
     - Open an old-version database fixture and assert migration succeeds.
     - Assert reopening is idempotent.
 
-- [ ] **2.4 Implement index writes and rebuild**
-  - [ ] 2.4.1 Implement `upsert_certificate`.
+- [x] **2.4 Implement index writes and rebuild**
+  - [x] 2.4.1 Implement `upsert_certificate`.
     - Use `INSERT ... ON CONFLICT(serial) DO UPDATE`.
     - Update FTS row by deleting and reinserting serial.
     - Store derived status from `CertificateStatus::derive`.
-  - [ ] 2.4.2 Implement `upsert_revocation`.
+  - [x] 2.4.2 Implement `upsert_revocation`.
     - Resolve `certificate_id` by serial.
     - Reject unknown serial with `NotFound`.
-  - [ ] 2.4.3 Implement `upsert_authority`.
-  - [ ] 2.4.4 Implement `upsert_audit_event`.
-  - [ ] 2.4.5 Implement `rebuild`.
+  - [x] 2.4.3 Implement `upsert_authority`.
+  - [x] 2.4.4 Implement `upsert_audit_event`.
+  - [x] 2.4.5 Implement `rebuild`.
     - Clear all mutable tables in one transaction.
     - Scan filesystem records.
     - Insert certificates, revocations, authorities, profiles, and audit events.
     - Update `meta('rebuilt_at')`.
     - Return counts in `IndexReport`.
-  - [ ] 2.4.6 Implement `repair`.
+  - [x] 2.4.6 Implement `repair`.
     - Rebuild index.
     - Move expired active certificates to `certificates/expired/`.
     - Never modify certificate or metadata content.
     - Report moved serials in `IndexReport`.
-  - [ ] 2.4.7 Implement `stats`.
+  - [x] 2.4.7 Implement `stats`.
     - Return totals per status, profile, authority, algorithm.
-  - [ ] 2.4.8 Add tests.
+  - [x] 2.4.8 Add tests.
     - Create a store with fixtures, rebuild, delete DB, rebuild, assert identical query results.
     - Insert a revocation, rebuild, assert status is revoked.
     - Advance `FakeClock` past expiry, run `repair`, assert file location changes and status is expired.
     - Corrupt a metadata file, assert rebuild reports the exact path and line.
 
-- [ ] **2.5 Implement search and filtering**
-  - [ ] 2.5.1 Implement `SearchQuery` execution.
+- [x] **2.5 Implement search and filtering**
+  - [x] 2.5.1 Implement `SearchQuery` execution.
     - Fields: `text`, `status`, `profile`, `authority`, `expires_within_days`, `include_expired`, `limit`, `offset`.
     - `text` matches serial, subject, CN, email, and SAN using FTS5 with prefix matching.
     - Sort by `expires_at ASC`, then `serial ASC`.
-  - [ ] 2.5.2 Implement `expires_within_days`.
+  - [x] 2.5.2 Implement `expires_within_days`.
     - Compute cutoff from injected `Clock`.
     - Exclude expired unless `include_expired` is true.
-  - [ ] 2.5.3 Implement bounded pagination.
+  - [x] 2.5.3 Implement bounded pagination.
     - Default `limit = 50`, maximum `1000`.
     - Reject `offset > 1_000_000`.
-  - [ ] 2.5.4 Implement `count`.
-  - [ ] 2.5.5 Add tests.
+  - [x] 2.5.4 Implement `count`.
+  - [x] 2.5.5 Add tests.
     - Search by CN substring.
     - Search by email.
     - Search by SAN.
@@ -654,45 +654,45 @@ This phase owns `chainkeeper-store`. It has no dependency on cryptographic issua
     - Search by expires window 30 days.
     - Search with 1,000 fixtures completes under 2 seconds on CI.
 
-- [ ] **2.6 Implement read-side record parsing**
-  - [ ] 2.6.1 Implement PEM parsing with `x509-parser`.
+- [x] **2.6 Implement read-side record parsing**
+  - [x] 2.6.1 Implement PEM parsing with `x509-parser`.
     - Extract serial, subject string, issuer string, not_before, not_after, SANs, EKUs, key usages, and public key algorithm.
     - Return `ChainkeeperError::Storage` with file path on parse failure.
-  - [ ] 2.6.2 Implement metadata YAML parsing.
+  - [x] 2.6.2 Implement metadata YAML parsing.
     - Validate metadata serial equals PEM serial.
     - Validate `issued_at < expires_at`.
-  - [ ] 2.6.3 Implement canonical JSON/YAML serialization helpers.
+  - [x] 2.6.3 Implement canonical JSON/YAML serialization helpers.
     - Sort map keys for deterministic fixture output.
     - Use `serde_json::to_vec_pretty` with a trailing newline.
 
-- [ ] **2.7 Implement index drift detection**
-  - [ ] 2.7.1 Compare filesystem records with index rows.
-  - [ ] 2.7.2 Return `DoctorFinding` entries with codes `IDX_MISSING`, `IDX_EXTRA`, `IDX_HASH_MISMATCH`.
-  - [ ] 2.7.3 Add tests with intentionally stale index rows and missing rows.
+- [x] **2.7 Implement index drift detection**
+  - [x] 2.7.1 Compare filesystem records with index rows.
+  - [x] 2.7.2 Return `DoctorFinding` entries with codes `IDX_MISSING`, `IDX_EXTRA`, `IDX_HASH_MISMATCH`.
+  - [x] 2.7.3 Add tests with intentionally stale index rows and missing rows.
 
-- [ ] **2.8 Add store integration tests**
-  - [ ] 2.8.1 Test atomic write failure.
+- [x] **2.8 Add store integration tests**
+  - [x] 2.8.1 Test atomic write failure.
     - Make destination directory read-only on Unix.
     - Assert old file remains unchanged.
-  - [ ] 2.8.2 Test key permissions.
+  - [x] 2.8.2 Test key permissions.
     - On Unix assert `0600` for keys and `0700` for `.chainkeeper/`.
-  - [ ] 2.8.3 Test duplicate serial rejection.
-  - [ ] 2.8.4 Test parallel writes.
+  - [x] 2.8.3 Test duplicate serial rejection.
+  - [x] 2.8.4 Test parallel writes.
     - Spawn 16 threads writing distinct serials through the lock.
     - Assert all 16 exist and index count is 16.
-  - [ ] 2.8.5 Test deterministic listing order.
+  - [x] 2.8.5 Test deterministic listing order.
     - Insert records in random order, assert list output is lexical.
 
 ### Acceptance Criteria
 
-- [ ] `cargo test --quiet -p chainkeeper-store` passes.
-- [ ] A test deletes `cache/index.sqlite`, rebuilds, and asserts identical certificate, revocation, authority, audit, and search results.
-- [ ] A test asserts `chainkeeper-store` never writes outside `RepositoryPaths`.
-- [ ] A test asserts all private key writes use mode `0600` on Unix.
-- [ ] A test asserts 16 concurrent writers produce 16 unique serials with no index loss.
-- [ ] A test asserts `repair` moves expired certificates without modifying file contents.
-- [ ] A test asserts search by CN, email, SAN, status, profile, authority, and expiry window.
-- [ ] `cargo clippy -p chainkeeper-store --all-targets -- -D warnings` passes.
+- [x] `cargo test --quiet -p chainkeeper-store` passes.
+- [x] A test deletes `cache/index.sqlite`, rebuilds, and asserts identical certificate, revocation, authority, audit, and search results.
+- [x] A test asserts `chainkeeper-store` never writes outside `RepositoryPaths`.
+- [x] A test asserts all private key writes use mode `0600` on Unix.
+- [x] A test asserts 16 concurrent writers produce 16 unique serials with no index loss.
+- [x] A test asserts `repair` moves expired certificates without modifying file contents.
+- [x] A test asserts search by CN, email, SAN, status, profile, authority, and expiry window.
+- [x] `cargo clippy -p chainkeeper-store --all-targets -- -D warnings` passes.
 
 ---
 

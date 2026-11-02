@@ -11,6 +11,24 @@ authors.workspace = true
 
 [dependencies]
 chainkeeper-core = { workspace = true }
+fs2 = { workspace = true }
+rusqlite = { workspace = true }
+rusqlite_migration = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+serde_yaml_ng = { workspace = true }
+sha2 = { workspace = true }
+time = { workspace = true }
+x509-parser = { workspace = true }
+
+[dev-dependencies]
+chainkeeper-testkit = { workspace = true }
+openssl = { workspace = true }
+rusqlite = { workspace = true }
+serde_json = { workspace = true }
+serde_yaml_ng = { workspace = true }
+tempfile = { workspace = true }
+time = { workspace = true }
 
 [lints]
 workspace = true

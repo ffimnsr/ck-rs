@@ -55,6 +55,7 @@ assert_cmd = "2"
 axum = "0.8"
 clap = { version = "4", features = ["derive", "env", "string"] }
 comfy-table = "8"
+fs2 = "0.4"
 git2 = "0.21"
 inquire = "0.9"
 notify = "8"
@@ -64,7 +65,9 @@ rand = "0.10"
 rasn-cms = "0.30"
 rasn-ocsp = "0.30"
 regex = "1"
-rusqlite = { version = "0.41", features = ["bundled"] }
+# Pin rusqlite to the major version used by rusqlite_migration 2.6; two
+# crates cannot link the bundled sqlite3 native library at once.
+rusqlite = { version = "0.40", features = ["bundled"] }
 rusqlite_migration = "2"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
