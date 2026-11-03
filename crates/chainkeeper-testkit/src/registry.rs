@@ -266,6 +266,7 @@ pub struct InMemoryIndexStore {
     certificates: RwLock<BTreeMap<Serial, CertificateRecord>>,
     revocations: RwLock<BTreeMap<Serial, RevocationRecord>>,
     authorities: RwLock<BTreeMap<AuthorityName, AuthorityRecord>>,
+    crls: RwLock<BTreeMap<AuthorityName, chainkeeper_core::IndexedCrl>>,
     audit_events: RwLock<BTreeMap<EventId, AuditEvent>>,
 }
 
@@ -284,8 +285,18 @@ impl InMemoryIndexStore {
             certificates: RwLock::new(BTreeMap::new()),
             revocations: RwLock::new(BTreeMap::new()),
             authorities: RwLock::new(BTreeMap::new()),
+            crls: RwLock::new(BTreeMap::new()),
             audit_events: RwLock::new(BTreeMap::new()),
         }
+    }
+
+    /// Number of indexed CRL rows.
+    #[must_use]
+    pub fn crl_count(&self) -> usize {
+        self.crls
+            .read()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .len()
     }
 
     /// Returns the time used to derive certificate status.
@@ -309,6 +320,10 @@ impl IndexStore for InMemoryIndexStore {
             .write()
             .unwrap_or_else(std::sync::PoisonError::into_inner)
             .clear();
+        self.crls
+            .write()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .clear();
         self.audit_events
             .write()
             .unwrap_or_else(std::sync::PoisonError::into_inner)
@@ -321,6 +336,9 @@ impl IndexStore for InMemoryIndexStore {
         }
         for authority in &records.authorities {
             self.upsert_authority(authority)?;
+        }
+        for crl in &records.crls {
+            self.upsert_crl(crl)?;
         }
         for event in &records.audit_events {
             self.upsert_audit_event(event)?;
@@ -413,6 +431,14 @@ impl IndexStore for InMemoryIndexStore {
             .write()
             .unwrap_or_else(std::sync::PoisonError::into_inner)
             .insert(record.name.clone(), record.clone());
+        Ok(())
+    }
+
+    fn upsert_crl(&self, crl: &chainkeeper_core::IndexedCrl) -> Result<(), ChainkeeperError> {
+        self.crls
+            .write()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .insert(crl.record.authority.clone(), crl.clone());
         Ok(())
     }
 

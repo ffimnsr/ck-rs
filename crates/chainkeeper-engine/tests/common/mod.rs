@@ -439,6 +439,10 @@ impl chainkeeper_core::IndexStore for FailingIndex {
         self.inner.upsert_authority(record)
     }
 
+    fn upsert_crl(&self, crl: &chainkeeper_core::IndexedCrl) -> Result<(), ChainkeeperError> {
+        self.inner.upsert_crl(crl)
+    }
+
     fn upsert_audit_event(&self, event: &AuditEvent) -> Result<(), ChainkeeperError> {
         self.inner.upsert_audit_event(event)
     }

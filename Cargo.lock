@@ -341,6 +341,13 @@ name = "chainkeeper-publish"
 version = "0.1.0"
 dependencies = [
  "chainkeeper-core",
+ "chainkeeper-store",
+ "chainkeeper-testkit",
+ "serde_json",
+ "serde_yaml_ng",
+ "sha2",
+ "tempfile",
+ "time",
 ]
 
 [[package]]

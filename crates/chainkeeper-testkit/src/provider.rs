@@ -261,7 +261,10 @@ impl CertificateProvider for FakeCertificateProvider {
         Ok(CrlBundle {
             record,
             der,
-            pem: "-----BEGIN X509 CRL-----\nFAKE\n-----END X509 CRL-----\n".to_owned(),
+            pem: format!(
+                "-----BEGIN X509 CRL-----\nFAKE-{}\n-----END X509 CRL-----\n",
+                request.number
+            ),
         })
     }
 }

@@ -302,6 +302,13 @@ pub trait IndexStore: Send + Sync {
     /// Returns [`ChainkeeperError::Index`] on query failure.
     fn upsert_authority(&self, record: &AuthorityRecord) -> Result<(), ChainkeeperError>;
 
+    /// Inserts or updates a CRL row.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`ChainkeeperError::Index`] on query failure.
+    fn upsert_crl(&self, crl: &crate::records::IndexedCrl) -> Result<(), ChainkeeperError>;
+
     /// Inserts or updates an audit event row.
     ///
     /// # Errors

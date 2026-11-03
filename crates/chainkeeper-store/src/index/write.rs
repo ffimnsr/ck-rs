@@ -279,6 +279,16 @@ pub fn upsert_profile_tx(
     Ok(())
 }
 
+/// Upserts one CRL through the index connection.
+///
+/// # Errors
+///
+/// Returns [`ChainkeeperError::Index`] when the SQL statement fails.
+pub fn upsert_crl(index: &SqliteIndex, crl: &IndexedCrl) -> Result<(), ChainkeeperError> {
+    let connection = index.lock();
+    upsert_crl_tx(&connection, crl)
+}
+
 /// Upserts one CRL inside an open transaction.
 pub fn upsert_crl_tx(connection: &Connection, crl: &IndexedCrl) -> Result<(), ChainkeeperError> {
     connection

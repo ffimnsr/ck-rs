@@ -1478,30 +1478,30 @@ This phase owns `chainkeeper-publish`. It implements `CrlManager` and `PublishBu
 
 ### Work Items
 
-- [ ] **7.1 Implement CRL number allocation**
-  - [ ] 7.1.1 Read `crls/<authority>.number`.
-  - [ ] 7.1.2 If absent, start at 1.
-  - [ ] 7.1.3 Write the next number atomically after successful CRL generation.
-  - [ ] 7.1.4 Reject number `0` and non-integer contents.
-  - [ ] 7.1.5 Add tests for first generation, increment, and corrupted number file.
+- [x] **7.1 Implement CRL number allocation**
+  - [x] 7.1.1 Read `crls/<authority>.number`.
+  - [x] 7.1.2 If absent, start at 1.
+  - [x] 7.1.3 Write the next number atomically after successful CRL generation.
+  - [x] 7.1.4 Reject number `0` and non-integer contents.
+  - [x] 7.1.5 Add tests for first generation, increment, and corrupted number file.
 
-- [ ] **7.2 Implement CRL manager**
-  - [ ] 7.2.1 Load authority and signer.
-  - [ ] 7.2.2 Load all revocation records for authority.
-  - [ ] 7.2.3 Call `CertificateProvider::generate_crl`.
-  - [ ] 7.2.4 Write DER, PEM, metadata, and number.
-  - [ ] 7.2.5 Append `CRL_GENERATED` audit event.
-  - [ ] 7.2.6 Update index CRL row.
-  - [ ] 7.2.7 Return `CrlBundle`.
-  - [ ] 7.2.8 Add tests.
+- [x] **7.2 Implement CRL manager**
+  - [x] 7.2.1 Load authority and signer.
+  - [x] 7.2.2 Load all revocation records for authority.
+  - [x] 7.2.3 Call `CertificateProvider::generate_crl`.
+  - [x] 7.2.4 Write DER, PEM, metadata, and number.
+  - [x] 7.2.5 Append `CRL_GENERATED` audit event.
+  - [x] 7.2.6 Update index CRL row.
+  - [x] 7.2.7 Return `CrlBundle`.
+  - [x] 7.2.8 Add tests.
     - Empty revocation list produces a valid empty CRL.
     - One revocation appears in the CRL.
     - Revocations from another authority are excluded.
     - CRL number increments on second generation.
     - Corrupt authority key fails without writing number.
 
-- [ ] **7.3 Implement publish layout**
-  - [ ] 7.3.1 Define canonical artifact paths.
+- [x] **7.3 Implement publish layout**
+  - [x] 7.3.1 Define canonical artifact paths.
     - `root.pem`
     - `intermediates/<authority>.pem`
     - `chains/<profile>/<SERIAL>.pem`
@@ -1509,79 +1509,79 @@ This phase owns `chainkeeper-publish`. It implements `CrlManager` and `PublishBu
     - `crl/<authority>.crl.pem`
     - `aia/<authority>.pem`
     - `manifest.json`
-  - [ ] 7.3.2 Build chain files.
+  - [x] 7.3.2 Build chain files.
     - Leaf certificate first.
     - Issuing intermediate second.
     - Root last.
     - Include only authorities present in the repository.
-  - [ ] 7.3.3 Build `aia` files for root and every intermediate.
-  - [ ] 7.3.4 Copy current CRL DER and PEM for every authority with revocations or an existing CRL.
-  - [ ] 7.3.5 Write `root.pem` from the root certificate.
-  - [ ] 7.3.6 Add tests asserting exact relative paths and PEM order.
+  - [x] 7.3.3 Build `aia` files for root and every intermediate.
+  - [x] 7.3.4 Copy current CRL DER and PEM for every authority with revocations or an existing CRL.
+  - [x] 7.3.5 Write `root.pem` from the root certificate.
+  - [x] 7.3.6 Add tests asserting exact relative paths and PEM order.
 
-- [ ] **7.4 Implement manifest generation**
-  - [ ] 7.4.1 Sort artifacts by path.
-  - [ ] 7.4.2 Compute SHA-256 and byte length for each artifact.
-  - [ ] 7.4.3 Record `source_commit` from `GitRepository::head_commit`.
-  - [ ] 7.4.4 Record `generated_at` from `Clock`.
-  - [ ] 7.4.5 Record `tenant_id`.
-  - [ ] 7.4.6 Exclude `manifest.json` from the artifact list.
-  - [ ] 7.4.7 Write manifest last with a trailing newline.
-  - [ ] 7.4.8 Add tests.
+- [x] **7.4 Implement manifest generation**
+  - [x] 7.4.1 Sort artifacts by path.
+  - [x] 7.4.2 Compute SHA-256 and byte length for each artifact.
+  - [x] 7.4.3 Record `source_commit` from `GitRepository::head_commit`.
+  - [x] 7.4.4 Record `generated_at` from `Clock`.
+  - [x] 7.4.5 Record `tenant_id`.
+  - [x] 7.4.6 Exclude `manifest.json` from the artifact list.
+  - [x] 7.4.7 Write manifest last with a trailing newline.
+  - [x] 7.4.8 Add tests.
     - Manifest is deterministic with fixed clock and commit.
     - Artifact hashes match file contents.
     - Manifest excludes itself.
     - Manifest includes no `key.pem` or `*.key` paths.
 
-- [ ] **7.5 Implement atomic publish**
-  - [ ] 7.5.1 Build into a sibling temp directory.
-  - [ ] 7.5.2 Write artifacts and manifest to temp directory.
-  - [ ] 7.5.3 Validate temp directory.
-  - [ ] 7.5.4 Remove stale files in destination not present in manifest.
-  - [ ] 7.5.5 Move new files into destination atomically.
-  - [ ] 7.5.6 Remove temp directory on success and failure.
-  - [ ] 7.5.7 Reject destination outside allowed root.
-  - [ ] 7.5.8 Add tests.
+- [x] **7.5 Implement atomic publish**
+  - [x] 7.5.1 Build into a sibling temp directory.
+  - [x] 7.5.2 Write artifacts and manifest to temp directory.
+  - [x] 7.5.3 Validate temp directory.
+  - [x] 7.5.4 Remove stale files in destination not present in manifest.
+  - [x] 7.5.5 Move new files into destination atomically.
+  - [x] 7.5.6 Remove temp directory on success and failure.
+  - [x] 7.5.7 Reject destination outside allowed root.
+  - [x] 7.5.8 Add tests.
     - Interrupted build leaves previous destination intact.
     - Stale file is removed.
     - New file replaces old file.
     - Destination symlink is rejected.
 
-- [ ] **7.6 Implement publish validation**
-  - [ ] 7.6.1 Walk publish tree without following symlinks.
-  - [ ] 7.6.2 Reject any path containing `key` with a PEM private key block.
-  - [ ] 7.6.3 Reject any file whose name is `key.pem`.
-  - [ ] 7.6.4 Reject any file that is not listed in manifest.
-  - [ ] 7.6.5 Reject manifest artifact whose SHA-256 does not match.
-  - [ ] 7.6.6 Reject manifest artifact path traversal.
-  - [ ] 7.6.7 Add tests for each rejection.
+- [x] **7.6 Implement publish validation**
+  - [x] 7.6.1 Walk publish tree without following symlinks.
+  - [x] 7.6.2 Reject any path containing `key` with a PEM private key block.
+  - [x] 7.6.3 Reject any file whose name is `key.pem`.
+  - [x] 7.6.4 Reject any file that is not listed in manifest.
+  - [x] 7.6.5 Reject manifest artifact whose SHA-256 does not match.
+  - [x] 7.6.6 Reject manifest artifact path traversal.
+  - [x] 7.6.7 Add tests for each rejection.
 
-- [ ] **7.7 Implement publish diff support**
-  - [ ] 7.7.1 Add `PublishBuilder::changed_paths(previous_manifest, next_manifest)`.
-  - [ ] 7.7.2 Return added, removed, and modified artifact paths.
-  - [ ] 7.7.3 Add tests.
+- [x] **7.7 Implement publish diff support**
+  - [x] 7.7.1 Add `PublishBuilder::changed_paths(previous_manifest, next_manifest)`.
+  - [x] 7.7.2 Return added, removed, and modified artifact paths.
+  - [x] 7.7.3 Add tests.
 
-- [ ] **7.8 Add integration with revocation**
-  - [ ] 7.8.1 Add `refresh_after_revocation` helper.
+- [x] **7.8 Add integration with revocation**
+  - [x] 7.8.1 Add `refresh_after_revocation` helper.
     - Regenerate CRL for issuing authority.
     - If repository `publish/` exists, rebuild `publish/`.
     - Return the list of changed paths.
-  - [ ] 7.8.2 Add tests.
+  - [x] 7.8.2 Add tests.
     - No publish directory means only CRL files change.
     - Existing publish directory means CRL and chain artifacts update.
     - Publish refresh failure leaves CRLs updated and returns error.
 
 ### Acceptance Criteria
 
-- [ ] `cargo test --quiet -p chainkeeper-publish` passes.
-- [ ] Tests assert CRL generation for empty and non-empty revocation sets.
-- [ ] Tests assert CRL number monotonicity and per-authority isolation.
-- [ ] Tests assert exact publish paths and chain ordering.
-- [ ] Tests assert deterministic manifest for fixed clock and commit.
-- [ ] Tests assert stale files are removed and prior publish survives a failed build.
-- [ ] Tests assert private keys and symlinks are rejected.
-- [ ] Tests assert manifest hash, path traversal, and unlisted-file validation.
-- [ ] `cargo clippy -p chainkeeper-publish --all-targets -- -D warnings` passes.
+- [x] `cargo test --quiet -p chainkeeper-publish` passes.
+- [x] Tests assert CRL generation for empty and non-empty revocation sets.
+- [x] Tests assert CRL number monotonicity and per-authority isolation.
+- [x] Tests assert exact publish paths and chain ordering.
+- [x] Tests assert deterministic manifest for fixed clock and commit.
+- [x] Tests assert stale files are removed and prior publish survives a failed build.
+- [x] Tests assert private keys and symlinks are rejected.
+- [x] Tests assert manifest hash, path traversal, and unlisted-file validation.
+- [x] `cargo clippy -p chainkeeper-publish --all-targets -- -D warnings` passes.
 
 ---
 

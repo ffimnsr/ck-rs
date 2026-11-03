@@ -303,6 +303,10 @@ impl IndexStore for SqliteIndex {
         write::upsert_authority(self, record)
     }
 
+    fn upsert_crl(&self, crl: &chainkeeper_core::IndexedCrl) -> Result<(), ChainkeeperError> {
+        write::upsert_crl(self, crl)
+    }
+
     fn upsert_audit_event(&self, event: &AuditEvent) -> Result<(), ChainkeeperError> {
         write::upsert_audit_event(self, event)
     }
