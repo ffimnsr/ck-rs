@@ -1611,78 +1611,78 @@ This phase owns `chainkeeper-ocsp`. It implements `OcspResponder` using `rasn-oc
 
 ### Work Items
 
-- [ ] **8.1 Implement OCSP request parsing**
-  - [ ] 8.1.1 Parse `OCSPRequest` with `rasn-ocsp`.
-  - [ ] 8.1.2 Reject trailing bytes.
-  - [ ] 8.1.3 Reject unsupported request version.
-  - [ ] 8.1.4 Extract request list.
-  - [ ] 8.1.5 Reject empty request list.
-  - [ ] 8.1.6 Extract hash algorithm, issuer name hash, issuer key hash, and serial.
-  - [ ] 8.1.7 Extract optional nonce extension.
-  - [ ] 8.1.8 Return `OcspRequestMeta` with raw issuer name DER and issuer key hash.
-  - [ ] 8.1.9 Add tests for valid SHA-1 and SHA-256 requests.
-  - [ ] 8.1.10 Add tests for empty list, trailing bytes, unsupported hash, malformed DER, and oversized nonce.
+- [x] **8.1 Implement OCSP request parsing**
+  - [x] 8.1.1 Parse `OCSPRequest` with `rasn-ocsp`.
+  - [x] 8.1.2 Reject trailing bytes.
+  - [x] 8.1.3 Reject unsupported request version.
+  - [x] 8.1.4 Extract request list.
+  - [x] 8.1.5 Reject empty request list.
+  - [x] 8.1.6 Extract hash algorithm, issuer name hash, issuer key hash, and serial.
+  - [x] 8.1.7 Extract optional nonce extension.
+  - [x] 8.1.8 Return `OcspRequestMeta` with raw issuer name DER and issuer key hash.
+  - [x] 8.1.9 Add tests for valid SHA-1 and SHA-256 requests.
+  - [x] 8.1.10 Add tests for empty list, trailing bytes, unsupported hash, malformed DER, and oversized nonce.
 
-- [ ] **8.2 Implement issuer matching**
-  - [ ] 8.2.1 Build issuer index from authority certificates.
-  - [ ] 8.2.2 Compute issuer name hash using request hash algorithm over the raw issuer `Name` DER.
-  - [ ] 8.2.3 Compute issuer key hash using request hash algorithm over the raw SPKI DER.
-  - [ ] 8.2.4 Match both hashes and serial issuer.
-  - [ ] 8.2.5 Return `unauthorized` when no authority matches.
-  - [ ] 8.2.6 Add tests for correct match, wrong name hash, wrong key hash, and unknown issuer.
+- [x] **8.2 Implement issuer matching**
+  - [x] 8.2.1 Build issuer index from authority certificates.
+  - [x] 8.2.2 Compute issuer name hash using request hash algorithm over the raw issuer `Name` DER.
+  - [x] 8.2.3 Compute issuer key hash using request hash algorithm over the raw SPKI DER.
+  - [x] 8.2.4 Match both hashes and serial issuer.
+  - [x] 8.2.5 Return `unauthorized` when no authority matches.
+  - [x] 8.2.6 Add tests for correct match, wrong name hash, wrong key hash, and unknown issuer.
 
-- [ ] **8.3 Implement status lookup**
-  - [ ] 8.3.1 Build serial-to-status map from store records.
-  - [ ] 8.3.2 Return `good` for active.
-  - [ ] 8.3.3 Return `revoked` for revoked with `revocation_time` and `reason`.
-  - [ ] 8.3.4 Return `unknown` for expired certificates that are not revoked.
-  - [ ] 8.3.5 Return `unknown` for serials issued by another authority.
-  - [ ] 8.3.6 Add tests for all statuses.
+- [x] **8.3 Implement status lookup**
+  - [x] 8.3.1 Build serial-to-status map from store records.
+  - [x] 8.3.2 Return `good` for active.
+  - [x] 8.3.3 Return `revoked` for revoked with `revocation_time` and `reason`.
+  - [x] 8.3.4 Return `unknown` for expired certificates that are not revoked.
+  - [x] 8.3.5 Return `unknown` for serials issued by another authority.
+  - [x] 8.3.6 Add tests for all statuses.
 
-- [ ] **8.4 Implement response building**
-  - [ ] 8.4.1 Build `OCSPResponse` with status `successful`.
-  - [ ] 8.4.2 Build `BasicOCSPResponse`.
+- [x] **8.4 Implement response building**
+  - [x] 8.4.1 Build `OCSPResponse` with status `successful`.
+  - [x] 8.4.2 Build `BasicOCSPResponse`.
     - Version v1.
     - Responder ID byName using signer certificate subject and serial.
     - `producedAt` from `Clock`.
     - Single response for each request.
     - `thisUpdate` from `Clock`.
     - `nextUpdate` = `thisUpdate + 1 hour`.
-  - [ ] 8.4.3 Include `certStatus` good, revoked, or unknown.
-  - [ ] 8.4.4 Include nonce extension when requested.
-  - [ ] 8.4.5 Sign `tbsResponseData` with the OCSP signer.
-  - [ ] 8.4.6 Set signature algorithm from signer algorithm.
-  - [ ] 8.4.7 Include signer certificate and chain in `certs`.
-  - [ ] 8.4.8 Encode DER.
-  - [ ] 8.4.9 Add tests.
+  - [x] 8.4.3 Include `certStatus` good, revoked, or unknown.
+  - [x] 8.4.4 Include nonce extension when requested.
+  - [x] 8.4.5 Sign `tbsResponseData` with the OCSP signer.
+  - [x] 8.4.6 Set signature algorithm from signer algorithm.
+  - [x] 8.4.7 Include signer certificate and chain in `certs`.
+  - [x] 8.4.8 Encode DER.
+  - [x] 8.4.9 Add tests.
     - `openssl ocsp -respin` parses the response.
     - Response signature verifies with the signer public key.
     - Nonce round-trips exactly.
     - `thisUpdate` and `nextUpdate` match fixed clock.
 
-- [ ] **8.5 Implement error responses**
-  - [ ] 8.5.1 Return `malformedRequest` for parse errors.
-  - [ ] 8.5.2 Return `unauthorized` for unknown issuer.
-  - [ ] 8.5.3 Return `internalError` for signing or storage errors.
-  - [ ] 8.5.4 Return `tryLater` when state is not loaded.
-  - [ ] 8.5.5 Never include internal error strings in the DER response.
-  - [ ] 8.5.6 Add tests for every response status.
+- [x] **8.5 Implement error responses**
+  - [x] 8.5.1 Return `malformedRequest` for parse errors.
+  - [x] 8.5.2 Return `unauthorized` for unknown issuer.
+  - [x] 8.5.3 Return `internalError` for signing or storage errors.
+  - [x] 8.5.4 Return `tryLater` when state is not loaded.
+  - [x] 8.5.5 Never include internal error strings in the DER response.
+  - [x] 8.5.6 Add tests for every response status.
 
-- [ ] **8.6 Implement responder state and reload**
-  - [ ] 8.6.1 Implement `OcspState`.
+- [x] **8.6 Implement responder state and reload**
+  - [x] 8.6.1 Implement `OcspState`.
     - Authority index.
     - Certificate status map.
     - Signer certificate, key path, and chain.
-  - [ ] 8.6.2 Implement `load_state` from store and paths.
-  - [ ] 8.6.3 Validate signer certificate.
+  - [x] 8.6.2 Implement `load_state` from store and paths.
+  - [x] 8.6.3 Validate signer certificate.
     - EKU exactly contains OCSPSigning.
     - Not expired.
     - Chain verifies to OCSP intermediate and root.
     - Public key matches signer.
-  - [ ] 8.6.4 Implement atomic `reload` with `arc-swap`.
-  - [ ] 8.6.5 On reload failure, keep previous state and return error.
-  - [ ] 8.6.6 Implement `ready`.
-  - [ ] 8.6.7 Add tests.
+  - [x] 8.6.4 Implement atomic `reload` with `arc-swap`.
+  - [x] 8.6.5 On reload failure, keep previous state and return error.
+  - [x] 8.6.6 Implement `ready`.
+  - [x] 8.6.7 Add tests.
     - Valid state loads.
     - Missing signer key fails.
     - Wrong EKU fails.
@@ -1690,32 +1690,32 @@ This phase owns `chainkeeper-ocsp`. It implements `OcspResponder` using `rasn-oc
     - Reload swaps state atomically under concurrent requests.
     - Failed reload keeps old state.
 
-- [ ] **8.7 Implement multi-request behavior**
-  - [ ] 8.7.1 Support up to 10 certificate IDs per request.
-  - [ ] 8.7.2 Reject more than 10 with `malformedRequest`.
-  - [ ] 8.7.3 Build one single response per certificate ID in request order.
-  - [ ] 8.7.4 Add tests for 1, 10, and 11 certificate IDs.
+- [x] **8.7 Implement multi-request behavior**
+  - [x] 8.7.1 Support up to 10 certificate IDs per request.
+  - [x] 8.7.2 Reject more than 10 with `malformedRequest`.
+  - [x] 8.7.3 Build one single response per certificate ID in request order.
+  - [x] 8.7.4 Add tests for 1, 10, and 11 certificate IDs.
 
-- [ ] **8.8 Add security tests**
-  - [ ] 8.8.1 Assert no `std::process::Command` or `tokio::process::Command` in `crates/chainkeeper-ocsp/src`.
-  - [ ] 8.8.2 Assert response contains no private key material.
-  - [ ] 8.8.3 Assert oversized request is rejected before ASN.1 allocation.
-  - [ ] 8.8.4 Assert malformed DER fuzz corpus does not panic.
-  - [ ] 8.8.5 Add a fuzz target using `cargo-fuzz` metadata, runnable with `cargo fuzz run ocsp_request`.
-  - [ ] 8.8.6 Add a bounded random byte test that runs 10,000 iterations and asserts no panic.
+- [x] **8.8 Add security tests**
+  - [x] 8.8.1 Assert no `std::process::Command` or `tokio::process::Command` in `crates/chainkeeper-ocsp/src`.
+  - [x] 8.8.2 Assert response contains no private key material.
+  - [x] 8.8.3 Assert oversized request is rejected before ASN.1 allocation.
+  - [x] 8.8.4 Assert malformed DER fuzz corpus does not panic.
+  - [x] 8.8.5 Add a fuzz target using `cargo-fuzz` metadata, runnable with `cargo fuzz run ocsp_request`.
+  - [x] 8.8.6 Add a bounded random byte test that runs 10,000 iterations and asserts no panic.
 
 ### Acceptance Criteria
 
-- [ ] `cargo test --quiet -p chainkeeper-ocsp` passes.
-- [ ] Tests cover SHA-1 and SHA-256 request parsing.
-- [ ] Tests assert `good`, `revoked`, and `unknown` statuses.
-- [ ] Tests assert `malformedRequest`, `unauthorized`, `internalError`, and `tryLater`.
-- [ ] `openssl ocsp -respin` parses generated responses.
-- [ ] Tests assert nonce round-trip and 32-byte nonce limit.
-- [ ] Tests assert multi-request ordering and 10-request limit.
-- [ ] Tests assert failed reload preserves previous state.
-- [ ] A test asserts no subprocess execution exists in `chainkeeper-ocsp`.
-- [ ] `cargo clippy -p chainkeeper-ocsp --all-targets -- -D warnings` passes.
+- [x] `cargo test --quiet -p chainkeeper-ocsp` passes.
+- [x] Tests cover SHA-1 and SHA-256 request parsing.
+- [x] Tests assert `good`, `revoked`, and `unknown` statuses.
+- [x] Tests assert `malformedRequest`, `unauthorized`, `internalError`, and `tryLater`.
+- [x] `openssl ocsp -respin` parses generated responses.
+- [x] Tests assert nonce round-trip and 32-byte nonce limit.
+- [x] Tests assert multi-request ordering and 10-request limit.
+- [x] Tests assert failed reload preserves previous state.
+- [x] A test asserts no subprocess execution exists in `chainkeeper-ocsp`.
+- [x] `cargo clippy -p chainkeeper-ocsp --all-targets -- -D warnings` passes.
 
 ---
 

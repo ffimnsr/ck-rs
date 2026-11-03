@@ -62,8 +62,10 @@ notify = "8"
 openssl = "0.10"
 predicates = "3"
 rand = "0.10"
+rasn = "0.30"
 rasn-cms = "0.30"
 rasn-ocsp = "0.30"
+rasn-pkix = "0.30"
 regex = "1"
 # Pin rusqlite to the major version used by rusqlite_migration 2.6; two
 # crates cannot link the bundled sqlite3 native library at once.

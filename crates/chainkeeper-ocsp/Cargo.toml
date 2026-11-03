@@ -10,7 +10,20 @@ repository.workspace = true
 authors.workspace = true
 
 [dependencies]
+arc-swap = { workspace = true }
 chainkeeper-core = { workspace = true }
+openssl = { workspace = true }
+rasn = { workspace = true }
+rasn-ocsp = { workspace = true }
+rasn-pkix = { workspace = true }
+time = { workspace = true }
+tracing = { workspace = true }
+
+[dev-dependencies]
+chainkeeper-crypto = { workspace = true }
+chainkeeper-store = { workspace = true }
+chainkeeper-testkit = { workspace = true }
+tempfile = { workspace = true }
 
 [lints]
 workspace = true
