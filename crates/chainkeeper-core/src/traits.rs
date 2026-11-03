@@ -659,6 +659,16 @@ pub trait ChainkeeperService: Send + Sync {
     /// [`ChainkeeperError::Storage`] on failure.
     fn search(&self, query: &SearchQuery) -> Result<Vec<CertificateRecord>, ChainkeeperError>;
 
+    /// Counts certificates matching `query`, ignoring pagination.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`ChainkeeperError::Index`] or
+    /// [`ChainkeeperError::Storage`] on failure.
+    fn count(&self, query: &SearchQuery) -> Result<u64, ChainkeeperError> {
+        Ok(u64::try_from(self.search(query)?.len()).unwrap_or(u64::MAX))
+    }
+
     /// Returns the trust hierarchy.
     ///
     /// # Errors
@@ -707,6 +717,18 @@ pub trait ChainkeeperService: Send + Sync {
     ///
     /// Returns [`ChainkeeperError::Index`] when the rebuild fails.
     fn rebuild_index(&self) -> Result<IndexReport, ChainkeeperError>;
+
+    /// Repairs misplaced canonical records and rebuilds the index.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`ChainkeeperError::Index`] or
+    /// [`ChainkeeperError::Storage`] when repair fails.
+    fn repair_index(&self) -> Result<IndexReport, ChainkeeperError> {
+        Err(ChainkeeperError::not_implemented(
+            "index repair is not available",
+        ))
+    }
 }
 
 /// Provider of the immutable snapshot served by the HTTP server.

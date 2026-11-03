@@ -197,15 +197,48 @@ impl GitRepo {
         Ok(clean)
     }
 
-    fn validate_existing(&self, path: &Path) -> Result<PathBuf, ChainkeeperError> {
-        let relative = self.relative_path(path)?;
-        if !self.root.join(&relative).is_file() {
-            return Err(git(format!(
-                "required path {} does not exist",
-                relative.display()
-            )));
+    fn is_tracked(repository: &Repository, relative: &Path) -> Result<bool, ChainkeeperError> {
+        let Some(head) = Self::head_parent(repository)? else {
+            return Ok(false);
+        };
+        let tree = head
+            .tree()
+            .map_err(|error| git(format!("could not read HEAD tree: {error}")))?;
+        Ok(tree.get_path(relative).is_ok())
+    }
+
+    fn collect_files(
+        &self,
+        relative: &Path,
+        files: &mut BTreeSet<PathBuf>,
+    ) -> Result<(), ChainkeeperError> {
+        let directory = self.root.join(relative);
+        let entries = fs::read_dir(&directory).map_err(|error| {
+            git(format!(
+                "could not read directory {}: {error}",
+                directory.display()
+            ))
+        })?;
+        for entry in entries {
+            let entry = entry.map_err(|error| {
+                git(format!(
+                    "could not read directory {}: {error}",
+                    directory.display()
+                ))
+            })?;
+            let name = entry.file_name();
+            if name == ".git" {
+                continue;
+            }
+            let child = relative.join(name);
+            let path = entry.path();
+            if path.is_dir() {
+                self.collect_files(&child, files)?;
+            } else if path.is_file() {
+                files.insert(child);
+            }
         }
-        Ok(relative)
+        Ok(())
     }
 
     fn head_parent(repository: &Repository) -> Result<Option<git2::Commit<'_>>, ChainkeeperError> {
@@ -368,24 +401,50 @@ impl GitRepository for GitRepo {
             return Err(git("commit message must not be empty"));
         }
 
-        // Validate every path before touching the index so a failure leaves the
-        // on-disk index exactly as it was.
-        let mut relatives = BTreeSet::new();
+        let repository = self.repository()?;
+
+        // Directories are expanded, and tracked paths that disappeared are
+        // staged as deletions so a move between canonical status directories
+        // commits atomically. A missing untracked path is still rejected.
+        let mut additions = BTreeSet::new();
+        let mut removals = BTreeSet::new();
         for path in paths {
-            relatives.insert(self.validate_existing(path)?);
+            let relative = self.relative_path(path)?;
+            let absolute = self.root.join(&relative);
+            if absolute.is_file() {
+                additions.insert(relative);
+            } else if absolute.is_dir() {
+                self.collect_files(&relative, &mut additions)?;
+            } else if Self::is_tracked(&repository, &relative)? {
+                removals.insert(relative);
+            } else {
+                return Err(git(format!(
+                    "required path {} does not exist",
+                    relative.display()
+                )));
+            }
         }
-        if relatives.is_empty() {
+        if additions.is_empty() && removals.is_empty() {
             return Err(git("commit requires at least one path"));
         }
 
-        let repository = self.repository()?;
         let mut index = repository
             .index()
             .map_err(|error| git(format!("could not read git index: {error}")))?;
-        for relative in &relatives {
+        for relative in &additions {
             index
                 .add_path(relative)
                 .map_err(|error| git(format!("could not stage {}: {error}", relative.display())))?;
+        }
+        for relative in &removals {
+            if let Err(error) = index.remove_path(relative)
+                && error.code() != ErrorCode::NotFound
+            {
+                return Err(git(format!(
+                    "could not stage deletion of {}: {error}",
+                    relative.display()
+                )));
+            }
         }
         assert_index_has_no_private_keys(&index)?;
         index

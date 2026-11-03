@@ -32,9 +32,19 @@ fn workspace_root() -> PathBuf {
 fn allowed(name: &str) -> BTreeSet<&'static str> {
     match name {
         "chainkeeper-core" => BTreeSet::new(),
-        "chainkeeper-cli" | "chainkeeper-server" => {
-            BTreeSet::from(["chainkeeper-core", "chainkeeper-engine"])
-        }
+        // Binary crates compose the concrete implementations. Library crates
+        // keep the strict core-only direction.
+        "chainkeeper-cli" => BTreeSet::from([
+            "chainkeeper-core",
+            "chainkeeper-engine",
+            "chainkeeper-store",
+            "chainkeeper-crypto",
+            "chainkeeper-policy",
+            "chainkeeper-audit",
+            "chainkeeper-git",
+            "chainkeeper-publish",
+        ]),
+        "chainkeeper-server" => BTreeSet::from(["chainkeeper-core", "chainkeeper-engine"]),
         _ => BTreeSet::from(["chainkeeper-core"]),
     }
 }

@@ -429,6 +429,10 @@ pub struct PublishOptions {
     pub output_dir: PathBuf,
     /// Remove stale artifacts from the destination before publishing.
     pub clean: bool,
+    /// Build into a temporary directory without writing the destination.
+    pub dry_run: bool,
+    /// Write artifacts without auditing or committing.
+    pub no_commit: bool,
 }
 
 impl PublishOptions {
@@ -438,6 +442,8 @@ impl PublishOptions {
         Self {
             output_dir: output_dir.into(),
             clean: false,
+            dry_run: false,
+            no_commit: false,
         }
     }
 }

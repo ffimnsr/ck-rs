@@ -67,12 +67,12 @@ pub fn revoke(
     let mut paths = outcome.paths;
     paths.push(engine.audit_path(&event));
     let message = messages::revoke(&request.serial, request.reason);
-    engine.commit(&message, &paths)?;
+    let commit = engine.commit(&message, &paths)?;
 
     Ok(RevokeReport {
         revocation: outcome.record,
         crl: outcome.crl,
-        commit: None,
+        commit: Some(commit),
     })
 }
 
@@ -108,7 +108,7 @@ pub fn revoke_internal(
     let revocation_path = engine.write_revocation(rollback, &revocation)?;
 
     let mut paths = vec![revocation_path];
-    for extension in ["pem", "yaml", "key.pem"] {
+    for extension in ["pem", "yaml"] {
         let from = engine.paths.certificate_path_in(
             CertificateStatus::Active,
             &record.serial,
@@ -121,6 +121,7 @@ pub fn revoke_internal(
         )?;
         if from.exists() {
             rollback.moved(&from, &to);
+            paths.push(from);
             paths.push(to);
         }
     }
@@ -160,13 +161,6 @@ pub fn revoke_internal(
             .build(&PublishOptions::new(publish_dir.clone()))?;
         paths.push(publish_dir);
     }
-
-    paths.push(engine.paths.certificates_dir_for(CertificateStatus::Active));
-    paths.push(
-        engine
-            .paths
-            .certificates_dir_for(CertificateStatus::Revoked),
-    );
 
     Ok(RevocationOutcome {
         record: revocation,

@@ -1744,45 +1744,45 @@ This phase owns `chainkeeper-cli`. Command handlers consume `&dyn ChainkeeperSer
 
 ### Work Items
 
-- [ ] **9.1 Implement global CLI structure**
-  - [ ] 9.1.1 Add global flags.
+- [x] **9.1 Implement global CLI structure**
+  - [x] 9.1.1 Add global flags.
     - `--repo <PATH>` default current directory.
     - `--json`.
     - `--no-color`.
     - `--yes`.
     - `--verbose`.
     - `--quiet`.
-  - [ ] 9.1.2 Add `--version` with version, commit, and target triple.
-  - [ ] 9.1.3 Add `--help` for every command and subcommand.
-  - [ ] 9.1.4 Add exit-code mapping from `ChainkeeperError::exit_code`.
-  - [ ] 9.1.5 Add a test asserting `--help` exits 0 for every command.
-  - [ ] 9.1.6 Add a test asserting an unknown command exits 2.
-  - [ ] 9.1.7 Add a test asserting `--json` writes only valid JSON to stdout on success.
-  - [ ] 9.1.8 Add a test asserting errors go to stderr and stdout is empty on failure.
+  - [x] 9.1.2 Add `--version` with version, commit, and target triple.
+  - [x] 9.1.3 Add `--help` for every command and subcommand.
+  - [x] 9.1.4 Add exit-code mapping from `ChainkeeperError::exit_code`.
+  - [x] 9.1.5 Add a test asserting `--help` exits 0 for every command.
+  - [x] 9.1.6 Add a test asserting an unknown command exits 2.
+  - [x] 9.1.7 Add a test asserting `--json` writes only valid JSON to stdout on success.
+  - [x] 9.1.8 Add a test asserting errors go to stderr and stdout is empty on failure.
 
-- [ ] **9.2 Implement `ck init`**
-  - [ ] 9.2.1 Flags: `--tenant-id`, `--display-name`, `--default-profile`, `--force`.
-  - [ ] 9.2.2 Call `ChainkeeperService::init`.
-  - [ ] 9.2.3 Human output lists created paths and commit SHA.
-  - [ ] 9.2.4 JSON output returns `InitReport`.
-  - [ ] 9.2.5 Add tests for success, non-empty directory, and `--force` rejection.
-  - [ ] 9.2.6 Add a non-TTY test asserting missing `--tenant-id` exits 2.
+- [x] **9.2 Implement `ck init`**
+  - [x] 9.2.1 Flags: `--tenant-id`, `--display-name`, `--default-profile`, `--force`.
+  - [x] 9.2.2 Call `ChainkeeperService::init`.
+  - [x] 9.2.3 Human output lists created paths and commit SHA.
+  - [x] 9.2.4 JSON output returns `InitReport`.
+  - [x] 9.2.5 Add tests for success, non-empty directory, and `--force` rejection.
+  - [x] 9.2.6 Add a non-TTY test asserting missing `--tenant-id` exits 2.
 
-- [ ] **9.3 Implement authority commands**
-  - [ ] 9.3.1 Implement `ck root create`.
+- [x] **9.3 Implement authority commands**
+  - [x] 9.3.1 Implement `ck root create`.
     - Flags: `--cn`, `--algorithm`, `--validity-days`, `--org`, `--country`.
     - Defaults from decisions.
-  - [ ] 9.3.2 Implement `ck intermediate create`.
+  - [x] 9.3.2 Implement `ck intermediate create`.
     - Flags: `--name`, `--parent` default `root`, `--algorithm`, `--validity-days`, `--cn`.
     - Validate name against `{tls, smime, codesign, ocsp}`.
-  - [ ] 9.3.3 Implement `ck intermediate inspect`.
+  - [x] 9.3.3 Implement `ck intermediate inspect`.
     - Flags: optional `--name`; interactive selection when omitted.
-  - [ ] 9.3.4 Implement `ck ocsp-signer create`.
+  - [x] 9.3.4 Implement `ck ocsp-signer create`.
     - Flags: `--cn`, `--validity-days` default 90.
-  - [ ] 9.3.5 Add tests using fake service and assert exact JSON fields.
+  - [x] 9.3.5 Add tests using fake service and assert exact JSON fields.
 
-- [ ] **9.4 Implement issue command**
-  - [ ] 9.4.1 Flags.
+- [x] **9.4 Implement issue command**
+  - [x] 9.4.1 Flags.
     - `--profile`, `--cn`, `--dns`, `--ip`, `--email`, `--uri`.
     - `--org`, `--ou`, `--country`, `--state`, `--locality`.
     - `--algorithm`, `--validity-days`.
@@ -1791,14 +1791,14 @@ This phase owns `chainkeeper-cli`. Command handlers consume `&dyn ChainkeeperSer
     - `--csr <PATH>`.
     - `--key-out <PATH>`.
     - `--replaces <SERIAL>`.
-  - [ ] 9.4.2 Interactive flow.
+  - [x] 9.4.2 Interactive flow.
     - Prompt for profile when missing.
     - Prompt for CN when missing.
     - Prompt for SANs when profile requires them.
     - Confirm before writing key material.
-  - [ ] 9.4.3 Human output shows serial, subject, profile, expiry, certificate path, key path, fingerprint.
-  - [ ] 9.4.4 JSON output returns `IssueReport`.
-  - [ ] 9.4.5 Add tests.
+  - [x] 9.4.3 Human output shows serial, subject, profile, expiry, certificate path, key path, fingerprint.
+  - [x] 9.4.4 JSON output returns `IssueReport`.
+  - [x] 9.4.5 Add tests.
     - All flags parse.
     - Custom OID strings parse into `CustomExtension`.
     - Missing CN in non-TTY exits 2.
@@ -1806,104 +1806,104 @@ This phase owns `chainkeeper-cli`. Command handlers consume `&dyn ChainkeeperSer
     - Replace flag forwards serial.
     - JSON output has no human text.
 
-- [ ] **9.5 Implement revoke command**
-  - [ ] 9.5.1 Flags: `--serial`, `--reason`, `--comment`, `--yes`.
-  - [ ] 9.5.2 Interactive flow.
+- [x] **9.5 Implement revoke command**
+  - [x] 9.5.1 Flags: `--serial`, `--reason`, `--comment`, `--yes`.
+  - [x] 9.5.2 Interactive flow.
     - Prompt with searchable list of active certificates.
     - Display serial, CN, profile, expiry.
     - Require explicit confirmation.
-  - [ ] 9.5.3 Human output shows serial, reason, CRL number, commit SHA.
-  - [ ] 9.5.4 JSON output returns `RevokeReport`.
-  - [ ] 9.5.5 Add tests.
+  - [x] 9.5.3 Human output shows serial, reason, CRL number, commit SHA.
+  - [x] 9.5.4 JSON output returns `RevokeReport`.
+  - [x] 9.5.5 Add tests.
     - All nine reasons accepted.
     - Unknown reason exits 2.
     - Missing serial in non-TTY exits 2.
     - `--yes` skips confirmation.
     - Revoke error maps to exit 1.
 
-- [ ] **9.6 Implement inspect command**
-  - [ ] 9.6.1 Flags: `--serial`, `--file`, `--json`.
-  - [ ] 9.6.2 Interactive selector when neither serial nor file is supplied.
-  - [ ] 9.6.3 Human table includes all fields from the reference document.
-  - [ ] 9.6.4 JSON output returns `InspectReport`.
-  - [ ] 9.6.5 Add tests for serial and file input.
+- [x] **9.6 Implement inspect command**
+  - [x] 9.6.1 Flags: `--serial`, `--file`, `--json`.
+  - [x] 9.6.2 Interactive selector when neither serial nor file is supplied.
+  - [x] 9.6.3 Human table includes all fields from the reference document.
+  - [x] 9.6.4 JSON output returns `InspectReport`.
+  - [x] 9.6.5 Add tests for serial and file input.
 
-- [ ] **9.7 Implement search command**
-  - [ ] 9.7.1 Flags.
+- [x] **9.7 Implement search command**
+  - [x] 9.7.1 Flags.
     - `--query`, `--status`, `--profile`, `--issuer`, `--expires <30d>`, `--all`, `--limit`, `--offset`.
-  - [ ] 9.7.2 Parse duration syntax `Nd` and `Nh`.
-  - [ ] 9.7.3 Human table columns: serial, CN, profile, status, expires, authority.
-  - [ ] 9.7.4 JSON output returns `{ items, total, limit, offset }`.
-  - [ ] 9.7.5 Add tests for every filter and invalid duration.
+  - [x] 9.7.2 Parse duration syntax `Nd` and `Nh`.
+  - [x] 9.7.3 Human table columns: serial, CN, profile, status, expires, authority.
+  - [x] 9.7.4 JSON output returns `{ items, total, limit, offset }`.
+  - [x] 9.7.5 Add tests for every filter and invalid duration.
 
-- [ ] **9.8 Implement tree command**
-  - [ ] 9.8.1 Render ASCII tree.
-  - [ ] 9.8.2 `--json` returns `TreeReport`.
-  - [ ] 9.8.3 Add tests for default hierarchy and broken hierarchy.
+- [x] **9.8 Implement tree command**
+  - [x] 9.8.1 Render ASCII tree.
+  - [x] 9.8.2 `--json` returns `TreeReport`.
+  - [x] 9.8.3 Add tests for default hierarchy and broken hierarchy.
 
-- [ ] **9.9 Implement analyze command**
-  - [ ] 9.9.1 Add subcommands: `expirations`, `revocations`, `intermediates`, `algorithms`, `policy`.
-  - [ ] 9.9.2 Human output uses tables and grouped sections.
-  - [ ] 9.9.3 `--json` returns `AnalyzeReport`.
-  - [ ] 9.9.4 Add tests for each subcommand.
+- [x] **9.9 Implement analyze command**
+  - [x] 9.9.1 Add subcommands: `expirations`, `revocations`, `intermediates`, `algorithms`, `policy`.
+  - [x] 9.9.2 Human output uses tables and grouped sections.
+  - [x] 9.9.3 `--json` returns `AnalyzeReport`.
+  - [x] 9.9.4 Add tests for each subcommand.
 
-- [ ] **9.10 Implement audit command**
-  - [ ] 9.10.1 Flags: `--action`, `--object-type`, `--object-id`, `--since`, `--until`, `--limit`.
-  - [ ] 9.10.2 Human table columns: seq, timestamp, action, object, summary.
-  - [ ] 9.10.3 `--json` returns event array.
-  - [ ] 9.10.4 Add tests for filters and ordering.
+- [x] **9.10 Implement audit command**
+  - [x] 9.10.1 Flags: `--action`, `--object-type`, `--object-id`, `--since`, `--until`, `--limit`.
+  - [x] 9.10.2 Human table columns: seq, timestamp, action, object, summary.
+  - [x] 9.10.3 `--json` returns event array.
+  - [x] 9.10.4 Add tests for filters and ordering.
 
-- [ ] **9.11 Implement doctor command**
-  - [ ] 9.11.1 Human output groups errors, warnings, and OK checks.
-  - [ ] 9.11.2 `--json` returns `DoctorReport`.
-  - [ ] 9.11.3 Exit 3 when errors exist.
-  - [ ] 9.11.4 Exit 0 when only warnings exist.
-  - [ ] 9.11.5 Add tests for both exit paths.
+- [x] **9.11 Implement doctor command**
+  - [x] 9.11.1 Human output groups errors, warnings, and OK checks.
+  - [x] 9.11.2 `--json` returns `DoctorReport`.
+  - [x] 9.11.3 Exit 3 when errors exist.
+  - [x] 9.11.4 Exit 0 when only warnings exist.
+  - [x] 9.11.5 Add tests for both exit paths.
 
-- [ ] **9.12 Implement diff command**
-  - [ ] 9.12.1 Flags: `--since <REV>`.
-  - [ ] 9.12.2 Human output groups by category.
-  - [ ] 9.12.3 `--json` returns `DiffReport`.
-  - [ ] 9.12.4 Add tests for no manifest and all categories.
+- [x] **9.12 Implement diff command**
+  - [x] 9.12.1 Flags: `--since <REV>`.
+  - [x] 9.12.2 Human output groups by category.
+  - [x] 9.12.3 `--json` returns `DiffReport`.
+  - [x] 9.12.4 Add tests for no manifest and all categories.
 
-- [ ] **9.13 Implement publish command**
-  - [ ] 9.13.1 Flags: `--dry-run`, `--no-commit`.
-  - [ ] 9.13.2 `--dry-run` builds to a temp directory and prints manifest summary.
-  - [ ] 9.13.3 `--no-commit` writes artifacts but skips Git commit and audit.
-  - [ ] 9.13.4 Human output lists artifact count, changed paths, and commit SHA.
-  - [ ] 9.13.5 `--json` returns `PublishManifest`.
-  - [ ] 9.13.6 Add tests for all modes.
+- [x] **9.13 Implement publish command**
+  - [x] 9.13.1 Flags: `--dry-run`, `--no-commit`.
+  - [x] 9.13.2 `--dry-run` builds to a temp directory and prints manifest summary.
+  - [x] 9.13.3 `--no-commit` writes artifacts but skips Git commit and audit.
+  - [x] 9.13.4 Human output lists artifact count, changed paths, and commit SHA.
+  - [x] 9.13.5 `--json` returns `PublishManifest`.
+  - [x] 9.13.6 Add tests for all modes.
 
-- [ ] **9.14 Implement index command**
-  - [ ] 9.14.1 Add `ck index rebuild [--repair]`.
-  - [ ] 9.14.2 Human output shows counts.
-  - [ ] 9.14.3 `--json` returns `IndexReport`.
-  - [ ] 9.14.4 Add tests for rebuild and repair.
+- [x] **9.14 Implement index command**
+  - [x] 9.14.1 Add `ck index rebuild [--repair]`.
+  - [x] 9.14.2 Human output shows counts.
+  - [x] 9.14.3 `--json` returns `IndexReport`.
+  - [x] 9.14.4 Add tests for rebuild and repair.
 
-- [ ] **9.15 Implement interactive selector module**
-  - [ ] 9.15.1 Define `Selector<T>` with `filter(text, items)`.
-  - [ ] 9.15.2 Implement substring matching across CN, email, SANs, serial, and profile.
-  - [ ] 9.15.3 Implement stable ordering by serial.
-  - [ ] 9.15.4 Implement non-TTY fallback that returns an error, never blocks.
-  - [ ] 9.15.5 Add unit tests for filtering, ordering, and non-TTY fallback.
+- [x] **9.15 Implement interactive selector module**
+  - [x] 9.15.1 Define `Selector<T>` with `filter(text, items)`.
+  - [x] 9.15.2 Implement substring matching across CN, email, SANs, serial, and profile.
+  - [x] 9.15.3 Implement stable ordering by serial.
+  - [x] 9.15.4 Implement non-TTY fallback that returns an error, never blocks.
+  - [x] 9.15.5 Add unit tests for filtering, ordering, and non-TTY fallback.
 
-- [ ] **9.16 Implement output formatting**
-  - [ ] 9.16.1 Implement `Ui` trait with `info`, `warn`, `error`, `table`, `json`.
-  - [ ] 9.16.2 Implement `HumanUi` and `JsonUi`.
-  - [ ] 9.16.3 Respect `--no-color` and `NO_COLOR`.
-  - [ ] 9.16.4 Disable color when stdout is not a TTY.
-  - [ ] 9.16.5 Add tests for color decisions.
+- [x] **9.16 Implement output formatting**
+  - [x] 9.16.1 Implement `Ui` trait with `info`, `warn`, `error`, `table`, `json`.
+  - [x] 9.16.2 Implement `HumanUi` and `JsonUi`.
+  - [x] 9.16.3 Respect `--no-color` and `NO_COLOR`.
+  - [x] 9.16.4 Disable color when stdout is not a TTY.
+  - [x] 9.16.5 Add tests for color decisions.
 
 ### Acceptance Criteria
 
-- [ ] `cargo test --quiet -p chainkeeper-cli` passes.
-- [ ] Every command and subcommand has a passing `--help` test.
-- [ ] Every command has a JSON output test with exact fields.
-- [ ] Tests assert exit codes 0, 1, 2, and 3.
-- [ ] Tests assert non-TTY missing-value paths exit 2 without blocking.
-- [ ] Tests assert interactive selector filters and ordering.
-- [ ] Tests assert human output never contains private key blocks.
-- [ ] `cargo clippy -p chainkeeper-cli --all-targets -- -D warnings` passes.
+- [x] `cargo test --quiet -p chainkeeper-cli` passes.
+- [x] Every command and subcommand has a passing `--help` test.
+- [x] Every command has a JSON output test with exact fields.
+- [x] Tests assert exit codes 0, 1, 2, and 3.
+- [x] Tests assert non-TTY missing-value paths exit 2 without blocking.
+- [x] Tests assert interactive selector filters and ordering.
+- [x] Tests assert human output never contains private key blocks.
+- [x] `cargo clippy -p chainkeeper-cli --all-targets -- -D warnings` passes.
 
 ---
 

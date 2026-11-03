@@ -284,6 +284,13 @@ impl FileStore {
         let certificate_path = self.paths.authority_path(name, "cert.pem")?;
         let chain_path = self.paths.authority_path(name, "chain.pem")?;
 
+        // `init` pre-creates every authority directory before any key exists.
+        // A directory without `authority.yaml` is therefore an empty slot, not
+        // a corrupt authority.
+        if !config_path.is_file() {
+            return Ok(None);
+        }
+
         let config: AuthorityConfig = canonical::read_yaml(&config_path, "authority")?;
         config.validate()?;
         if config.name != *name {

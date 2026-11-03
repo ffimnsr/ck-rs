@@ -51,7 +51,9 @@ pub fn issue(engine: &Engine, request: &IssueRequest) -> Result<IssueReport, Cha
             return Err(error);
         }
     };
-    engine.commit(&message, &paths)?;
+    let commit = engine.commit(&message, &paths)?;
+    let mut report = report;
+    report.commit = Some(commit);
     Ok(report)
 }
 

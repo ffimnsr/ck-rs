@@ -395,6 +395,10 @@ impl ChainkeeperService for Engine {
         crate::query::search(self, query)
     }
 
+    fn count(&self, query: &SearchQuery) -> Result<u64, ChainkeeperError> {
+        self.index.count(query)
+    }
+
     fn tree(&self) -> Result<TreeReport, ChainkeeperError> {
         crate::query::tree(self)
     }
@@ -424,5 +428,9 @@ impl ChainkeeperService for Engine {
 
     fn rebuild_index(&self) -> Result<IndexReport, ChainkeeperError> {
         crate::maintenance::rebuild_index(self)
+    }
+
+    fn repair_index(&self) -> Result<IndexReport, ChainkeeperError> {
+        crate::maintenance::repair_index(self)
     }
 }
