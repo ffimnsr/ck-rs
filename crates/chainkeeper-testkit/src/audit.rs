@@ -36,7 +36,7 @@ impl InMemoryAuditLog {
 }
 
 fn event_id(seq: u64) -> Result<EventId, ChainkeeperError> {
-    EventId::new(format!("01J{seq:022}"))
+    EventId::new(format!("01J{seq:023}"))
 }
 
 /// Returns true when `event` satisfies `query`.

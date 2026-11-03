@@ -34,7 +34,7 @@ impl FakeIdGenerator {
 impl IdGenerator for FakeIdGenerator {
     fn ulid(&self) -> String {
         let value = self.next_ulid.fetch_add(1, Ordering::SeqCst) + 1;
-        format!("01J{value:022}")
+        format!("01J{value:023}")
     }
 
     fn serial(&self) -> Serial {

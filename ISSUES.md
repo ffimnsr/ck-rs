@@ -1075,65 +1075,65 @@ This phase owns `chainkeeper-audit` and `chainkeeper-git`. It has no dependency 
 
 ### Work Items
 
-- [ ] **5.1 Implement audit event serialization**
-  - [ ] 5.1.1 Serialize `AuditEvent` to canonical JSON.
+- [x] **5.1 Implement audit event serialization**
+  - [x] 5.1.1 Serialize `AuditEvent` to canonical JSON.
     - Sort object keys.
     - Add trailing newline.
     - Reject non-UTC timestamps.
-  - [ ] 5.1.2 Deserialize with `deny_unknown_fields`.
-  - [ ] 5.1.3 Add schema tests for every `AuditAction`.
-  - [ ] 5.1.4 Add a test asserting all `details` values are JSON objects, not raw strings.
+  - [x] 5.1.2 Deserialize with `deny_unknown_fields`.
+  - [x] 5.1.3 Add schema tests for every `AuditAction`.
+  - [x] 5.1.4 Add a test asserting all `details` values are JSON objects, not raw strings.
 
-- [ ] **5.2 Implement `FileAuditLog`**
-  - [ ] 5.2.1 Implement `next_seq`.
+- [x] **5.2 Implement `FileAuditLog`**
+  - [x] 5.2.1 Implement `next_seq`.
     - Scan `audit/events/*.json`.
     - Return max `seq + 1`.
     - Fail on duplicate sequence numbers.
-  - [ ] 5.2.2 Implement `append`.
+  - [x] 5.2.2 Implement `append`.
     - Allocate `seq` under repository lock.
     - Create event ID if absent.
     - Write `audit/events/<ULID>.json` with `create_new`.
     - Return the stored event.
-  - [ ] 5.2.3 Implement `list`.
+  - [x] 5.2.3 Implement `list`.
     - Filter by action, object type, object ID, since, until, and limit.
     - Sort by `seq` ascending.
-  - [ ] 5.2.4 Implement `verify`.
+  - [x] 5.2.4 Implement `verify`.
     - Assert sequence numbers are contiguous from 1.
     - Assert every file parses.
     - Assert no duplicate IDs or sequence numbers.
     - Return `DoctorFinding` codes `AUDIT_SEQ_GAP`, `AUDIT_DUPLICATE`, `AUDIT_INVALID`.
-  - [ ] 5.2.5 Add tests.
+  - [x] 5.2.5 Add tests.
     - Duplicate event ID is rejected.
     - Concurrent appends under the lock produce contiguous sequence numbers.
     - Editing an event file is detected by `verify`.
     - Deleting an event file is detected by `verify`.
     - Listing filters work.
 
-- [ ] **5.3 Implement Git repository wrapper**
-  - [ ] 5.3.1 Implement `init`.
+- [x] **5.3 Implement Git repository wrapper**
+  - [x] 5.3.1 Implement `init`.
     - Create repository at path.
     - Set initial branch `main`.
     - Write `.gitignore`.
     - Add all files.
     - Create initial commit with message `feat(ck): initialize tenant <tenant_id>`.
-  - [ ] 5.3.2 Implement `head_commit`.
+  - [x] 5.3.2 Implement `head_commit`.
     - Return full 40-character SHA.
     - Return `ChainkeeperError::Git` when no commits exist.
-  - [ ] 5.3.3 Implement `status`.
+  - [x] 5.3.3 Implement `status`.
     - Return staged, unstaged, and untracked paths.
-  - [ ] 5.3.4 Implement `is_clean`.
-  - [ ] 5.3.5 Implement `commit`.
+  - [x] 5.3.4 Implement `is_clean`.
+  - [x] 5.3.5 Implement `commit`.
     - Stage exactly the supplied paths.
     - Reject paths outside repository root.
     - Reject missing paths.
     - Create one commit.
     - Return full SHA.
     - Leave unrelated unstaged changes untouched.
-  - [ ] 5.3.6 Implement `diff`.
+  - [x] 5.3.6 Implement `diff`.
     - Return `GitChange { path, kind }` for added, modified, deleted, and renamed files.
     - Support commit-to-commit and commit-to-working-tree diffs.
-  - [ ] 5.3.7 Implement `log` for the last `n` commits.
-  - [ ] 5.3.8 Add tests.
+  - [x] 5.3.7 Implement `log` for the last `n` commits.
+  - [x] 5.3.8 Add tests.
     - Init creates one commit and clean status.
     - Commit stages only supplied paths.
     - Commit does not include an unrelated modified file.
@@ -1141,25 +1141,25 @@ This phase owns `chainkeeper-audit` and `chainkeeper-git`. It has no dependency 
     - Diff reports added, modified, and deleted files.
     - Path traversal in commit paths is rejected.
 
-- [ ] **5.4 Implement repository transaction helper**
-  - [ ] 5.4.1 Implement `RepositoryTransaction`.
+- [x] **5.4 Implement repository transaction helper**
+  - [x] 5.4.1 Implement `RepositoryTransaction`.
     - Acquire exclusive lock.
     - Record a list of paths to stage.
     - Provide `stage_path(path)`.
     - Provide `commit(message)`.
     - On drop without commit, release lock and leave files for inspection; do not auto-delete.
-  - [ ] 5.4.2 Implement rollback for created files.
+  - [x] 5.4.2 Implement rollback for created files.
     - Track files created by the transaction.
     - Provide `rollback_created()`.
     - Do not delete pre-existing files.
-  - [ ] 5.4.3 Add tests.
+  - [x] 5.4.3 Add tests.
     - Successful transaction commits.
     - Failed transaction rolls back created files and leaves pre-existing files.
     - Lock is released after rollback.
     - Two concurrent transactions cannot commit overlapping paths.
 
-- [ ] **5.5 Implement commit message builders**
-  - [ ] 5.5.1 Add `CommitMessage` constructors.
+- [x] **5.5 Implement commit message builders**
+  - [x] 5.5.1 Add `CommitMessage` constructors.
     - Init: `feat(ck): initialize tenant <id>`
     - Root: `feat(ck): create root authority <name>`
     - Intermediate: `feat(ck): create intermediate authority <name>`
@@ -1170,40 +1170,40 @@ This phase owns `chainkeeper-audit` and `chainkeeper-git`. It has no dependency 
     - CRL: `feat(ck): regenerate crl <authority> number <n>`
     - Publish: `chore(ck): publish artifacts from <source_commit>`
     - Index: `chore(ck): rebuild index`
-  - [ ] 5.5.2 Add tests asserting exact messages and no trailing whitespace.
+  - [x] 5.5.2 Add tests asserting exact messages and no trailing whitespace.
 
-- [ ] **5.6 Implement Gitignore and secret checks**
-  - [ ] 5.6.1 Add `ensure_gitignore`.
+- [x] **5.6 Implement Gitignore and secret checks**
+  - [x] 5.6.1 Add `ensure_gitignore`.
     - Write the exact Global Decisions `.gitignore` when absent.
     - Append missing rules when present.
     - Never remove unrelated rules.
-  - [ ] 5.6.2 Add `assert_no_staged_private_keys`.
+  - [x] 5.6.2 Add `assert_no_staged_private_keys`.
     - Inspect staged paths for `key.pem` or `*.key`.
     - Return `ChainkeeperError::Git` if any are staged.
-  - [ ] 5.6.3 Add tests.
+  - [x] 5.6.3 Add tests.
     - `ck init` produces a clean repository with no tracked keys.
     - A deliberate `git add authorities/root/key.pem` is rejected by the guard.
     - Existing custom gitignore rules survive.
 
-- [ ] **5.7 Implement commit signing compatibility**
-  - [ ] 5.7.1 Respect Git config `commit.gpgsign`.
+- [x] **5.7 Implement commit signing compatibility**
+  - [x] 5.7.1 Respect Git config `commit.gpgsign`.
     - If enabled, use `git2` commit signing with the configured key.
     - If signing fails, return `ChainkeeperError::Git` and do not create an unsigned commit.
-  - [ ] 5.7.2 Add a test with a temporary GPG key only if `gpg` is available and `CHAINKEEPER_TEST_GPG=1`.
+  - [x] 5.7.2 Add a test with a temporary GPG key only if `gpg` is available and `CHAINKEEPER_TEST_GPG=1`.
     - Otherwise assert the config is read and the code path is selected without creating a commit.
-  - [ ] 5.7.3 Never disable hooks or verification in product code.
+  - [x] 5.7.3 Never disable hooks or verification in product code.
 
 ### Acceptance Criteria
 
-- [ ] `cargo test --quiet -p chainkeeper-audit` passes.
-- [ ] `cargo test --quiet -p chainkeeper-git` passes.
-- [ ] A test asserts audit files are created with `create_new` and duplicate IDs fail.
-- [ ] A test asserts concurrent audit appends produce contiguous sequence numbers.
-- [ ] A test asserts `verify` detects edited and deleted audit files.
-- [ ] A test asserts commits stage only supplied paths and leave unrelated changes untouched.
-- [ ] A test asserts private keys cannot be staged.
-- [ ] A test asserts commit message formats exactly.
-- [ ] `cargo clippy -p chainkeeper-audit -p chainkeeper-git --all-targets -- -D warnings` passes.
+- [x] `cargo test --quiet -p chainkeeper-audit` passes.
+- [x] `cargo test --quiet -p chainkeeper-git` passes.
+- [x] A test asserts audit files are created with `create_new` and duplicate IDs fail.
+- [x] A test asserts concurrent audit appends produce contiguous sequence numbers.
+- [x] A test asserts `verify` detects edited and deleted audit files.
+- [x] A test asserts commits stage only supplied paths and leave unrelated changes untouched.
+- [x] A test asserts private keys cannot be staged.
+- [x] A test asserts commit message formats exactly.
+- [x] `cargo clippy -p chainkeeper-audit -p chainkeeper-git --all-targets -- -D warnings` passes.
 
 ---
 
