@@ -91,17 +91,20 @@ pub trait CertificateProvider: Send + Sync {
     /// Returns [`ChainkeeperError::Crypto`] when key generation fails.
     fn generate_key(&self, algorithm: KeyAlgorithm) -> Result<KeyMaterial, ChainkeeperError>;
 
-    /// Creates a self-signed root authority.
+    /// Creates a self-signed root authority and its key pair.
+    ///
+    /// The provider owns root key generation because the returned
+    /// [`AuthorityBundle`] carries the private key. Root key material is
+    /// therefore always exportable; HSM-backed roots are a post-V1 concern.
     ///
     /// # Errors
     ///
-    /// Returns [`ChainkeeperError::Crypto`] when certificate construction or
-    /// signing fails, or [`ChainkeeperError::Validation`] when the request is
-    /// inconsistent.
+    /// Returns [`ChainkeeperError::Crypto`] when key generation, certificate
+    /// construction, or signing fails, or [`ChainkeeperError::Validation`]
+    /// when the request is inconsistent.
     fn create_root(
         &self,
         request: &CreateAuthorityRequest,
-        signer: &dyn Signer,
     ) -> Result<AuthorityBundle, ChainkeeperError>;
 
     /// Creates an intermediate authority signed by `parent`.

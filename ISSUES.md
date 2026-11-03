@@ -343,7 +343,7 @@ This phase does not implement PKI behavior. It defines the contracts that Phases
     - Document that HSM implementations will implement this trait without changing callers.
   - [x] 1.5.4 Define `CertificateProvider`.
     - `fn generate_key(&self, alg: KeyAlgorithm) -> Result<KeyMaterial>`.
-    - `fn create_root(&self, req: &CreateAuthorityRequest, signer: &dyn Signer) -> Result<AuthorityBundle>`.
+    - `fn create_root(&self, req: &CreateAuthorityRequest) -> Result<AuthorityBundle>`; the provider generates and returns the root key.
     - `fn create_intermediate(&self, req: &CreateAuthorityRequest, parent: &AuthorityMaterial, parent_signer: &dyn Signer) -> Result<AuthorityBundle>`.
     - `fn create_ocsp_signer(&self, req: &CreateOcspSignerRequest, parent: &AuthorityMaterial, parent_signer: &dyn Signer) -> Result<SignerBundle>`.
     - `fn issue(&self, req: &IssueRequest, signer: &dyn Signer) -> Result<IssuedCertificate>`.
@@ -722,96 +722,96 @@ This phase owns `chainkeeper-crypto`. It produces and verifies cryptographic art
 
 ### Work Items
 
-- [ ] **3.1 Implement key generation**
-  - [ ] 3.1.1 Implement `generate_key` for `Rsa3072`.
+- [x] **3.1 Implement key generation**
+  - [x] 3.1.1 Implement `generate_key` for `Rsa3072`.
     - Generate RSA 3072.
     - Encode PKCS#8 PEM.
     - Return `KeyMaterial` with PEM bytes and public key DER.
-  - [ ] 3.1.2 Implement `generate_key` for `EcdsaP256`.
+  - [x] 3.1.2 Implement `generate_key` for `EcdsaP256`.
     - Generate P-256 key.
     - Encode PKCS#8 PEM.
-  - [ ] 3.1.3 Implement `generate_key` for `Ed25519`.
+  - [x] 3.1.3 Implement `generate_key` for `Ed25519`.
     - Generate Ed25519 key.
     - Encode PKCS#8 PEM.
-  - [ ] 3.1.4 Implement passphrase encryption.
+  - [x] 3.1.4 Implement passphrase encryption.
     - Read passphrase from `CHAINKEEPER_KEY_PASSPHRASE` only at the binary boundary and pass it as `Option<SecretString>`.
     - Encrypt with AES-256-CBC and PBKDF2 when present.
     - Decrypt transparently in `FileSigner`.
     - Add tests for correct, wrong, and missing passphrase.
-  - [ ] 3.1.5 Add key generation tests.
+  - [x] 3.1.5 Add key generation tests.
     - Assert parseable PKCS#8.
     - Assert public key size: RSA 3072, ECDSA 256-bit, Ed25519 32-byte public key.
     - Assert RSA key generation is not used for `ecdsa-p256`.
 
-- [ ] **3.2 Implement `FileSigner`**
-  - [ ] 3.2.1 Load a PEM private key from a path.
-  - [ ] 3.2.2 Implement `public_key_der`.
-  - [ ] 3.2.3 Implement `sign`.
+- [x] **3.2 Implement `FileSigner`**
+  - [x] 3.2.1 Load a PEM private key from a path.
+  - [x] 3.2.2 Implement `public_key_der`.
+  - [x] 3.2.3 Implement `sign`.
     - `RsaPkcs1Sha256` uses PKCS#1 v1.5 with SHA-256.
     - `EcdsaSha256` uses ECDSA with SHA-256.
     - `Ed25519` signs the message directly.
-  - [ ] 3.2.4 Reject scheme/algorithm mismatches with `ChainkeeperError::Crypto`.
-  - [ ] 3.2.5 Add tests.
+  - [x] 3.2.4 Reject scheme/algorithm mismatches with `ChainkeeperError::Crypto`.
+  - [x] 3.2.5 Add tests.
     - Sign a fixed message and verify with the public key.
     - Reject signing with a mismatched scheme.
     - Assert `FileSigner` implements `Signer` as `Arc<dyn Signer>`.
 
-- [ ] **3.3 Implement root authority creation**
-  - [ ] 3.3.1 Build the X.509 name from `SubjectName`.
+- [x] **3.3 Implement root authority creation**
+  - [x] 3.3.1 Build the X.509 name from `SubjectName`.
     - Emit CN, O, OU, C, ST, L, and emailAddress in that order.
-  - [ ] 3.3.2 Set serial from `IdGenerator`.
-  - [ ] 3.3.3 Set validity from `Clock` and request validity days.
-  - [ ] 3.3.4 Add root extensions.
+  - [x] 3.3.2 Set serial from `IdGenerator`.
+  - [x] 3.3.3 Set validity from `Clock` and request validity days.
+  - [x] 3.3.4 Add root extensions.
     - `basicConstraints` critical, CA true, path length 1.
     - `keyUsage` critical: `keyCertSign`, `cRLSign`.
     - Subject key identifier.
     - Authority key identifier equal to SKI.
-  - [ ] 3.3.5 Self-sign with the root signer.
-  - [ ] 3.3.6 Return `AuthorityBundle` with certificate PEM, chain PEM equal to certificate, key PEM, and `AuthorityConfig`.
-  - [ ] 3.3.7 Add tests.
+  - [x] 3.3.5 Self-sign with the generated root key.
+  - [x] 3.3.6 Return `AuthorityBundle` with certificate PEM, chain PEM equal to certificate, key PEM, and `AuthorityConfig`.
+  - [x] 3.3.7 Add tests.
     - Parse certificate and assert self-signed.
     - Assert CA true and path length 1.
     - Assert key usage exactly keyCertSign and cRLSign.
     - Verify with a trust store containing only the root.
     - Assert validity equals request and clock.
 
-- [ ] **3.4 Implement intermediate authority creation**
-  - [ ] 3.4.1 Build intermediate request with parent root material.
-  - [ ] 3.4.2 Set `basicConstraints` critical, CA true, path length 0.
-  - [ ] 3.4.3 Set key usage `keyCertSign`, `cRLSign`.
-  - [ ] 3.4.4 Set AKI to parent SKI.
-  - [ ] 3.4.5 Sign with parent signer.
-  - [ ] 3.4.6 Return chain PEM containing intermediate then root.
-  - [ ] 3.4.7 Add tests.
+- [x] **3.4 Implement intermediate authority creation**
+  - [x] 3.4.1 Build intermediate request with parent root material.
+  - [x] 3.4.2 Set `basicConstraints` critical, CA true, path length 0.
+  - [x] 3.4.3 Set key usage `keyCertSign`, `cRLSign`.
+  - [x] 3.4.4 Set AKI to parent SKI.
+  - [x] 3.4.5 Sign with parent signer.
+  - [x] 3.4.6 Return chain PEM containing intermediate then root.
+  - [x] 3.4.7 Add tests.
     - Verify chain to root.
     - Assert intermediate is not self-signed.
     - Assert path length 0.
     - Assert intermediate validity does not exceed parent expiry.
 
-- [ ] **3.5 Implement OCSP signer creation**
-  - [ ] 3.5.1 Build end-entity certificate under the OCSP intermediate.
-  - [ ] 3.5.2 Set `basicConstraints` critical CA false.
-  - [ ] 3.5.3 Set key usage `digitalSignature`.
-  - [ ] 3.5.4 Set EKU `OCSPSigning`.
-  - [ ] 3.5.5 Set validity 90 days and clamp to parent expiry.
-  - [ ] 3.5.6 Return `SignerBundle` with cert, key, and chain containing signer, OCSP intermediate, and root.
-  - [ ] 3.5.7 Add tests.
+- [x] **3.5 Implement OCSP signer creation**
+  - [x] 3.5.1 Build end-entity certificate under the OCSP intermediate.
+  - [x] 3.5.2 Set `basicConstraints` critical CA false.
+  - [x] 3.5.3 Set key usage `digitalSignature`.
+  - [x] 3.5.4 Set EKU `OCSPSigning`.
+  - [x] 3.5.5 Set validity 90 days and clamp to parent expiry.
+  - [x] 3.5.6 Return `SignerBundle` with cert, key, and chain containing signer, OCSP intermediate, and root.
+  - [x] 3.5.7 Add tests.
     - Verify chain.
     - Assert EKU exactly OCSPSigning.
     - Assert CA false.
     - Assert key usage exactly digitalSignature.
 
-- [ ] **3.6 Implement leaf certificate issuance**
-  - [ ] 3.6.1 Handle generated-key issuance.
+- [x] **3.6 Implement leaf certificate issuance**
+  - [x] 3.6.1 Handle generated-key issuance.
     - Generate key for requested algorithm.
     - Build CSR-like public key request internally.
-  - [ ] 3.6.2 Handle supplied CSR.
+  - [x] 3.6.2 Handle supplied CSR.
     - Parse PEM CSR with `openssl::x509::X509Req`.
     - Verify CSR signature.
     - Reject a CSR whose public key is not in the issuer chain.
     - Use CSR subject and SANs unless overridden by request; reject conflicting overrides.
-  - [ ] 3.6.3 Set serial, validity, and issuer.
-  - [ ] 3.6.4 Add leaf extensions.
+  - [x] 3.6.3 Set serial, validity, and issuer.
+  - [x] 3.6.4 Add leaf extensions.
     - `basicConstraints` critical CA false.
     - `keyUsage` critical from profile.
     - `extendedKeyUsage` from profile.
@@ -820,9 +820,9 @@ This phase owns `chainkeeper-crypto`. It produces and verifies cryptographic art
     - AIA `caIssuers` URL from tenant config.
     - CRL distribution point from tenant config.
     - Custom extensions after validation.
-  - [ ] 3.6.5 Encode certificate PEM and private key PEM when generated.
-  - [ ] 3.6.6 Return `IssuedCertificate` with serial, PEM, key PEM, subject, issuer, SANs, EKUs, key usages, and timestamps.
-  - [ ] 3.6.7 Add tests.
+  - [x] 3.6.5 Encode certificate PEM and private key PEM when generated.
+  - [x] 3.6.6 Return `IssuedCertificate` with serial, PEM, key PEM, subject, issuer, SANs, EKUs, key usages, and timestamps.
+  - [x] 3.6.7 Add tests.
     - Verify leaf chain to root.
     - Assert issuer equals intermediate subject.
     - Assert SANs exactly match request.
@@ -831,46 +831,46 @@ This phase owns `chainkeeper-crypto`. It produces and verifies cryptographic art
     - Assert supplied CSR path does not generate a private key.
     - Assert invalid CSR signature is rejected.
 
-- [ ] **3.7 Implement CRL generation**
-  - [ ] 3.7.1 Build a CRL from revocation records.
+- [x] **3.7 Implement CRL generation**
+  - [x] 3.7.1 Build a CRL from revocation records.
     - Include only certificates issued by the target authority.
     - Include revocation reason codes.
     - Include invalidity date if present.
-  - [ ] 3.7.2 Set CRL fields.
+  - [x] 3.7.2 Set CRL fields.
     - `thisUpdate` from `Clock`.
     - `nextUpdate` = `thisUpdate + 7 days`, clamped to authority expiry.
     - CRL number from `CrlRequest`.
-  - [ ] 3.7.3 Add CRL extensions.
+  - [x] 3.7.3 Add CRL extensions.
     - AKI.
     - CRL number.
-  - [ ] 3.7.4 Sign with the issuing authority signer.
-  - [ ] 3.7.5 Return DER and PEM.
-  - [ ] 3.7.6 Add tests.
+  - [x] 3.7.4 Sign with the issuing authority signer.
+  - [x] 3.7.5 Return DER and PEM.
+  - [x] 3.7.6 Add tests.
     - Verify CRL signature with issuer public key.
     - Assert CRL number increments.
     - Assert only target-authority revocations appear.
     - Assert `nextUpdate > thisUpdate`.
     - Assert reason code round-trip for all nine reasons.
 
-- [ ] **3.8 Add provider-level security tests**
-  - [ ] 3.8.1 Assert no `std::process::Command` or `tokio::process::Command` in `crates/chainkeeper-crypto/src`.
+- [x] **3.8 Add provider-level security tests**
+  - [x] 3.8.1 Assert no `std::process::Command` or `tokio::process::Command` in `crates/chainkeeper-crypto/src`.
     - Implement as a test that recursively scans source files.
-  - [ ] 3.8.2 Assert private key PEM is never included in certificate PEM.
-  - [ ] 3.8.3 Assert passphrase is not present in returned errors.
-  - [ ] 3.8.4 Assert wrong key is rejected for signing.
-  - [ ] 3.8.5 Assert self-signed root cannot be used as an intermediate child.
+  - [x] 3.8.2 Assert private key PEM is never included in certificate PEM.
+  - [x] 3.8.3 Assert passphrase is not present in returned errors.
+  - [x] 3.8.4 Assert wrong key is rejected for signing.
+  - [x] 3.8.5 Assert self-signed root cannot be used as an intermediate child.
 
 ### Acceptance Criteria
 
-- [ ] `cargo test --quiet -p chainkeeper-crypto` passes.
-- [ ] Tests verify root, intermediate, OCSP signer, and leaf chains with `X509StoreContext`.
-- [ ] Tests cover RSA 3072, ECDSA P-256, and Ed25519 key generation and signing.
-- [ ] Tests assert CA, path length, key usage, EKU, SAN, AIA, CRL DP, SKI, and AKI extensions.
-- [ ] Tests cover passphrase-protected and unprotected keys.
-- [ ] Tests assert supplied CSR issuance does not generate a private key.
-- [ ] Tests assert CRL signatures verify and all nine revocation reasons round-trip.
-- [ ] A test asserts no subprocess execution exists in `chainkeeper-crypto`.
-- [ ] `cargo clippy -p chainkeeper-crypto --all-targets -- -D warnings` passes.
+- [x] `cargo test --quiet -p chainkeeper-crypto` passes.
+- [x] Tests verify root, intermediate, OCSP signer, and leaf chains with `X509StoreContext`.
+- [x] Tests cover RSA 3072, ECDSA P-256, and Ed25519 key generation and signing.
+- [x] Tests assert CA, path length, key usage, EKU, SAN, AIA, CRL DP, SKI, and AKI extensions.
+- [x] Tests cover passphrase-protected and unprotected keys.
+- [x] Tests assert supplied CSR issuance does not generate a private key.
+- [x] Tests assert CRL signatures verify and all nine revocation reasons round-trip.
+- [x] A test asserts no subprocess execution exists in `chainkeeper-crypto`.
+- [x] `cargo clippy -p chainkeeper-crypto --all-targets -- -D warnings` passes.
 
 ---
 

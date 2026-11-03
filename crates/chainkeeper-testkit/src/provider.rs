@@ -142,7 +142,6 @@ impl CertificateProvider for FakeCertificateProvider {
     fn create_root(
         &self,
         request: &CreateAuthorityRequest,
-        _signer: &dyn Signer,
     ) -> Result<AuthorityBundle, ChainkeeperError> {
         self.check(FakeOperation::CreateRoot)?;
         let material = AuthorityMaterial::new(

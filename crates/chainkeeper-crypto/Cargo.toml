@@ -11,6 +11,13 @@ authors.workspace = true
 
 [dependencies]
 chainkeeper-core = { workspace = true }
+openssl = { workspace = true }
+time = { workspace = true }
+x509-parser = { workspace = true }
+
+[dev-dependencies]
+chainkeeper-testkit = { workspace = true }
+tempfile = { workspace = true }
 
 [lints]
 workspace = true

@@ -276,6 +276,11 @@ name = "chainkeeper-crypto"
 version = "0.1.0"
 dependencies = [
  "chainkeeper-core",
+ "chainkeeper-testkit",
+ "openssl",
+ "tempfile",
+ "time",
+ "x509-parser",
 ]
 
 [[package]]
