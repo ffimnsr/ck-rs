@@ -62,6 +62,8 @@ fn commit_oid(index: usize, message: &str, paths: &[PathBuf]) -> String {
 
 impl GitRepository for InMemoryGitRepository {
     fn init(&self, _path: &Path) -> Result<(), ChainkeeperError> {
+        // Mirror the production repository, which creates the initial commit.
+        self.commit("feat(ck): initialize repository", &[])?;
         Ok(())
     }
 

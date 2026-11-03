@@ -120,6 +120,7 @@ impl PolicyEngine for NoopPolicyEngine {
 pub struct FakeCrlManager {
     now: OffsetDateTime,
     updates: AtomicU64,
+    records: RwLock<Vec<CrlRecord>>,
 }
 
 impl Default for FakeCrlManager {
@@ -135,7 +136,18 @@ impl FakeCrlManager {
         Self {
             now: time::macros::datetime!(2024-01-01 00:00:00 UTC),
             updates: AtomicU64::new(0),
+            records: RwLock::new(Vec::new()),
         }
+    }
+
+    /// Records a pre-existing CRL, as if a previous run generated it.
+    pub fn seed(&self, record: CrlRecord) {
+        let mut records = self
+            .records
+            .write()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        records.retain(|existing| existing.authority != record.authority);
+        records.push(record);
     }
 
     /// Number of successful CRL updates.
@@ -161,15 +173,21 @@ impl CrlManager for FakeCrlManager {
             der_path: PathBuf::from(format!("crls/{authority}.crl.der")),
             pem_path: PathBuf::from(format!("crls/{authority}.crl.pem")),
         };
-        Ok(CrlBundle {
-            record,
+        let bundle = CrlBundle {
             der: b"FAKE-CRL".to_vec(),
             pem: "-----BEGIN X509 CRL-----\nFAKE\n-----END X509 CRL-----\n".to_owned(),
-        })
+            record,
+        };
+        self.seed(bundle.record.clone());
+        Ok(bundle)
     }
 
     fn list_crls(&self) -> Result<Vec<CrlRecord>, ChainkeeperError> {
-        Ok(Vec::new())
+        Ok(self
+            .records
+            .read()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .clone())
     }
 }
 
@@ -279,6 +297,22 @@ impl InMemoryIndexStore {
 
 impl IndexStore for InMemoryIndexStore {
     fn rebuild(&self, records: &IndexRecords) -> Result<IndexReport, ChainkeeperError> {
+        self.certificates
+            .write()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .clear();
+        self.revocations
+            .write()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .clear();
+        self.authorities
+            .write()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .clear();
+        self.audit_events
+            .write()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .clear();
         for certificate in &records.certificates {
             self.upsert_certificate(certificate)?;
         }

@@ -296,6 +296,15 @@ name = "chainkeeper-engine"
 version = "0.1.0"
 dependencies = [
  "chainkeeper-core",
+ "chainkeeper-git",
+ "chainkeeper-testkit",
+ "serde",
+ "serde_json",
+ "serde_yaml_ng",
+ "sha2",
+ "tempfile",
+ "time",
+ "x509-parser",
 ]
 
 [[package]]

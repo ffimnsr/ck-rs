@@ -2,6 +2,7 @@
 
 use std::collections::BTreeSet;
 use std::sync::RwLock;
+use std::sync::atomic::{AtomicU64, Ordering};
 
 use chainkeeper_core::{
     AuthorityBundle, AuthorityConfig, AuthorityKind, AuthorityMaterial, CertificateProvider,
@@ -26,6 +27,8 @@ pub enum FakeOperation {
     CreateOcspSigner,
     /// `issue`.
     Issue,
+    /// `issue` after the key pair was generated but before returning.
+    IssueAfterKey,
     /// `generate_crl`.
     GenerateCrl,
 }
@@ -36,6 +39,7 @@ pub struct FakeCertificateProvider {
     fixtures: CertificateFixtures,
     now: OffsetDateTime,
     failures: RwLock<BTreeSet<FakeOperation>>,
+    serials: AtomicU64,
 }
 
 fn authority_config(request: &CreateAuthorityRequest, now: OffsetDateTime) -> AuthorityConfig {
@@ -84,6 +88,7 @@ impl FakeCertificateProvider {
             fixtures: CertificateFixtures::generate(now)?,
             now,
             failures: RwLock::new(BTreeSet::new()),
+            serials: AtomicU64::new(0),
         })
     }
 
@@ -198,8 +203,10 @@ impl CertificateProvider for FakeCertificateProvider {
             .ok_or_else(|| ChainkeeperError::not_found("profile", request.profile.as_str()))?;
         let algorithm = request.algorithm.unwrap_or(profile.algorithm);
         let validity_days = request.validity_days.unwrap_or(profile.validity_days);
+        let sequence = self.serials.fetch_add(1, Ordering::SeqCst) + 1;
+        let serial = Serial::new(format!("{sequence:04X}"))?;
         let record = CertificateRecord {
-            serial: Serial::new("0001")?,
+            serial: serial.clone(),
             subject: request.subject.clone(),
             issuer: "CN=Chainkeeper Test TLS, O=Chainkeeper Test".to_owned(),
             profile: request.profile.clone(),
@@ -210,7 +217,7 @@ impl CertificateProvider for FakeCertificateProvider {
             key_usages: profile.key_usage,
             issued_at: self.now,
             expires_at: self.now + Duration::days(i64::from(validity_days)),
-            path: "certificates/active/0001.pem".into(),
+            path: format!("certificates/active/{serial}.pem").into(),
             revoked_at: None,
             revocation_reason: None,
             replaces: request.replaces.clone(),
@@ -220,6 +227,7 @@ impl CertificateProvider for FakeCertificateProvider {
         } else {
             Some(self.generate_key(algorithm)?)
         };
+        self.check(FakeOperation::IssueAfterKey)?;
         Ok(IssuedCertificate::new(
             record,
             self.fixtures.leaf.cert_pem.clone(),

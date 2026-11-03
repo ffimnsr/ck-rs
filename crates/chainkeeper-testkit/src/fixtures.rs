@@ -159,6 +159,7 @@ fn build_leaf(
     key: &PKey<Private>,
     issuer: &KeyPair,
     sans: &[&str],
+    eku: &OpensslEku,
     dates: (i64, i64),
 ) -> Result<X509, ChainkeeperError> {
     let mut builder = X509Builder::new().map_err(crypto)?;
@@ -185,7 +186,7 @@ fn build_leaf(
         )
         .map_err(crypto)?;
     builder
-        .append_extension(OpensslEku::new().server_auth().build().map_err(crypto)?)
+        .append_extension(eku.build().map_err(crypto)?)
         .map_err(crypto)?;
 
     let mut san_builder = SubjectAlternativeName::new();
@@ -289,12 +290,15 @@ fn build_ocsp_signer(
     now: OffsetDateTime,
 ) -> Result<SignerBundle, ChainkeeperError> {
     let key = generate_ec_key()?;
+    let mut eku = OpensslEku::new();
+    eku.other("1.3.6.1.5.5.7.3.9");
     let certificate = build_leaf(
         "Chainkeeper Test OCSP",
         4,
         &key,
         &intermediate.pair,
         &[],
+        &eku,
         (dates.not_before, dates.ocsp_not_after),
     )?;
     Ok(SignerBundle {
@@ -318,12 +322,15 @@ fn build_leaf_fixture(
     now: OffsetDateTime,
 ) -> Result<IssuedCertificate, ChainkeeperError> {
     let key = generate_ec_key()?;
+    let mut eku = OpensslEku::new();
+    eku.server_auth();
     let certificate = build_leaf(
         "leaf.example.test",
         10,
         &key,
         &intermediate.pair,
         &["leaf.example.test"],
+        &eku,
         (dates.not_before, dates.leaf_not_after),
     )?;
     let record = CertificateRecord {

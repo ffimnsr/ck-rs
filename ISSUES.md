@@ -1232,38 +1232,38 @@ This phase owns `chainkeeper-engine`. It consumes only the frozen traits from `c
 
 ### Work Items
 
-- [ ] **6.1 Implement engine construction**
-  - [ ] 6.1.1 Add `EngineDependencies` struct.
+- [x] **6.1 Implement engine construction**
+  - [x] 6.1.1 Add `EngineDependencies` struct.
     - Fields: clock, ids, provider, store, index, profiles, policy, audit, git, lock, crl, publish, paths.
     - All fields are `Arc<dyn Trait>`.
-  - [ ] 6.1.2 Add `Engine::new(deps) -> Result<Self>` with non-null validation.
-  - [ ] 6.1.3 Implement `ChainkeeperService` for `Engine`.
-  - [ ] 6.1.4 Add a test constructing the engine entirely from `chainkeeper-testkit` fakes.
+  - [x] 6.1.2 Add `Engine::new(deps) -> Result<Self>` with non-null validation.
+  - [x] 6.1.3 Implement `ChainkeeperService` for `Engine`.
+  - [x] 6.1.4 Add a test constructing the engine entirely from `chainkeeper-testkit` fakes.
 
-- [ ] **6.2 Implement `init`**
-  - [ ] 6.2.1 Validate target directory.
+- [x] **6.2 Implement `init`**
+  - [x] 6.2.1 Validate target directory.
     - Accept empty directory.
     - Accept directory containing only an empty `.git`.
     - Reject non-empty directory and return `AlreadyExists`.
-  - [ ] 6.2.2 Create repository layout.
-  - [ ] 6.2.3 Write `tenant.yaml` from `InitRequest`.
-  - [ ] 6.2.4 Write default `policy.yaml`.
-  - [ ] 6.2.5 Write all six default profiles.
-  - [ ] 6.2.6 Write default `authorities/` directories without keys.
-  - [ ] 6.2.7 Write `.gitignore`.
-  - [ ] 6.2.8 Initialize Git and create first commit.
-  - [ ] 6.2.9 Open and initialize index.
-  - [ ] 6.2.10 Append `REPO_INITIALIZED` audit event.
-  - [ ] 6.2.11 Commit audit event and index metadata.
-  - [ ] 6.2.12 Add tests.
+  - [x] 6.2.2 Create repository layout.
+  - [x] 6.2.3 Write `tenant.yaml` from `InitRequest`.
+  - [x] 6.2.4 Write default `policy.yaml`.
+  - [x] 6.2.5 Write all six default profiles.
+  - [x] 6.2.6 Write default `authorities/` directories without keys.
+  - [x] 6.2.7 Write `.gitignore`.
+  - [x] 6.2.8 Initialize Git and create first commit.
+  - [x] 6.2.9 Open and initialize index.
+  - [x] 6.2.10 Append `REPO_INITIALIZED` audit event.
+  - [x] 6.2.11 Commit audit event and index metadata.
+  - [x] 6.2.12 Add tests.
     - Init creates exact layout.
     - Init rejects non-empty directory.
     - Init is reproducible with a fixed clock and IDs.
     - Init leaves no private keys.
     - Init produces one commit.
 
-- [ ] **6.3 Implement root and intermediate creation**
-  - [ ] 6.3.1 Implement `create_root`.
+- [x] **6.3 Implement root and intermediate creation**
+  - [x] 6.3.1 Implement `create_root`.
     - Validate no existing root.
     - Validate algorithm is allowed by policy.
     - Validate root validity is 7300 days unless request overrides within policy.
@@ -1272,7 +1272,7 @@ This phase owns `chainkeeper-engine`. It consumes only the frozen traits from `c
     - Update index.
     - Append `ROOT_CREATED`.
     - Commit.
-  - [ ] 6.3.2 Implement `create_intermediate`.
+  - [x] 6.3.2 Implement `create_intermediate`.
     - Validate parent exists and is root.
     - Validate name in `{tls, smime, codesign, ocsp}`.
     - Validate no existing intermediate with the same name.
@@ -1281,7 +1281,7 @@ This phase owns `chainkeeper-engine`. It consumes only the frozen traits from `c
     - Update index.
     - Append `INTERMEDIATE_CREATED`.
     - Commit.
-  - [ ] 6.3.3 Implement `create_ocsp_signer`.
+  - [x] 6.3.3 Implement `create_ocsp_signer`.
     - Validate OCSP intermediate exists.
     - Validate no existing signer.
     - Create signer.
@@ -1289,30 +1289,30 @@ This phase owns `chainkeeper-engine`. It consumes only the frozen traits from `c
     - Update index.
     - Append `OCSP_SIGNER_CREATED`.
     - Commit.
-  - [ ] 6.3.4 Add tests.
+  - [x] 6.3.4 Add tests.
     - Root creation twice fails with `AlreadyExists`.
     - Intermediate creation under missing parent fails.
     - Intermediate name outside allowed set fails.
     - OCSP signer creation before OCSP intermediate fails.
     - Every success appends exactly one audit event and one commit.
 
-- [ ] **6.4 Implement issuance**
-  - [ ] 6.4.1 Load repository config and state.
-  - [ ] 6.4.2 Validate policy and profile with `PolicyEngine`.
-  - [ ] 6.4.3 Select issuing authority from profile.
-  - [ ] 6.4.4 Validate authority is active and not expired.
-  - [ ] 6.4.5 Validate `replaces` when present.
+- [x] **6.4 Implement issuance**
+  - [x] 6.4.1 Load repository config and state.
+  - [x] 6.4.2 Validate policy and profile with `PolicyEngine`.
+  - [x] 6.4.3 Select issuing authority from profile.
+  - [x] 6.4.4 Validate authority is active and not expired.
+  - [x] 6.4.5 Validate `replaces` when present.
     - Target exists.
     - Target is active.
     - Target profile equals new profile.
-  - [ ] 6.4.6 Generate key when `csr_pem` is absent.
-  - [ ] 6.4.7 Generate certificate through provider.
-  - [ ] 6.4.8 Write certificate PEM, metadata, and optional key.
-  - [ ] 6.4.9 Update index.
-  - [ ] 6.4.10 Append `CERT_ISSUED` or `CERT_REPLACED`.
-  - [ ] 6.4.11 When `replaces` is present, perform revocation first and then issue.
-  - [ ] 6.4.12 Commit all created and moved paths.
-  - [ ] 6.4.13 Add tests.
+  - [x] 6.4.6 Generate key when `csr_pem` is absent.
+  - [x] 6.4.7 Generate certificate through provider.
+  - [x] 6.4.8 Write certificate PEM, metadata, and optional key.
+  - [x] 6.4.9 Update index.
+  - [x] 6.4.10 Append `CERT_ISSUED` or `CERT_REPLACED`.
+  - [x] 6.4.11 When `replaces` is present, perform revocation first and then issue.
+  - [x] 6.4.12 Commit all created and moved paths.
+  - [x] 6.4.13 Add tests.
     - Issue TLS, client, mTLS, S/MIME, code-signing, and OCSP certificates.
     - Policy failure creates no files and no commit.
     - Provider failure rolls back created files.
@@ -1321,19 +1321,19 @@ This phase owns `chainkeeper-engine`. It consumes only the frozen traits from `c
     - Issuance writes no private key when CSR is supplied.
     - Issuance with `key_out` writes key only at the requested path.
 
-- [ ] **6.5 Implement revocation**
-  - [ ] 6.5.1 Load certificate by serial.
-  - [ ] 6.5.2 Reject missing certificate with `NotFound`.
-  - [ ] 6.5.3 Reject already revoked certificate with `Conflict`.
-  - [ ] 6.5.4 Validate reason.
-  - [ ] 6.5.5 Write revocation record.
-  - [ ] 6.5.6 Move certificate files to `revoked`.
-  - [ ] 6.5.7 Update index.
-  - [ ] 6.5.8 Regenerate CRL for issuing authority through `CrlManager`.
-  - [ ] 6.5.9 Refresh publish directory through `PublishBuilder` when `publish/` already exists.
-  - [ ] 6.5.10 Append `CERT_REVOKED`.
-  - [ ] 6.5.11 Commit all changed paths.
-  - [ ] 6.5.12 Add tests.
+- [x] **6.5 Implement revocation**
+  - [x] 6.5.1 Load certificate by serial.
+  - [x] 6.5.2 Reject missing certificate with `NotFound`.
+  - [x] 6.5.3 Reject already revoked certificate with `Conflict`.
+  - [x] 6.5.4 Validate reason.
+  - [x] 6.5.5 Write revocation record.
+  - [x] 6.5.6 Move certificate files to `revoked`.
+  - [x] 6.5.7 Update index.
+  - [x] 6.5.8 Regenerate CRL for issuing authority through `CrlManager`.
+  - [x] 6.5.9 Refresh publish directory through `PublishBuilder` when `publish/` already exists.
+  - [x] 6.5.10 Append `CERT_REVOKED`.
+  - [x] 6.5.11 Commit all changed paths.
+  - [x] 6.5.12 Add tests.
     - Revoke active certificate succeeds.
     - Revoke missing certificate fails.
     - Revoke twice fails.
@@ -1342,44 +1342,44 @@ This phase owns `chainkeeper-engine`. It consumes only the frozen traits from `c
     - Publish refresh called only when publish exists.
     - Failure in CRL generation aborts before commit and rolls back revocation files.
 
-- [ ] **6.6 Implement inspect**
-  - [ ] 6.6.1 Load certificate by serial or path.
-  - [ ] 6.6.2 Build `InspectReport` with subject, issuer, serial, profile, status, validity, SANs, EKUs, key usages, algorithm, AIA URLs, OCSP URL, CRL URLs, fingerprint SHA-256.
-  - [ ] 6.6.3 Add tests for each field and for missing certificate.
+- [x] **6.6 Implement inspect**
+  - [x] 6.6.1 Load certificate by serial or path.
+  - [x] 6.6.2 Build `InspectReport` with subject, issuer, serial, profile, status, validity, SANs, EKUs, key usages, algorithm, AIA URLs, OCSP URL, CRL URLs, fingerprint SHA-256.
+  - [x] 6.6.3 Add tests for each field and for missing certificate.
 
-- [ ] **6.7 Implement search and tree**
-  - [ ] 6.7.1 Implement `search` delegating to `IndexStore` after validating query bounds.
-  - [ ] 6.7.2 Implement `tree`.
+- [x] **6.7 Implement search and tree**
+  - [x] 6.7.1 Implement `search` delegating to `IndexStore` after validating query bounds.
+  - [x] 6.7.2 Implement `tree`.
     - Load authorities.
     - Require exactly one root.
     - Build parent-child tree.
     - Reject cycles and orphan intermediates.
     - Return `TreeReport`.
-  - [ ] 6.7.3 Add tests with the default hierarchy and with a broken hierarchy.
+  - [x] 6.7.3 Add tests with the default hierarchy and with a broken hierarchy.
 
-- [ ] **6.8 Implement analyze**
-  - [ ] 6.8.1 Implement `analyze expirations`.
+- [x] **6.8 Implement analyze**
+  - [x] 6.8.1 Implement `analyze expirations`.
     - Buckets: expired, 0-30, 31-60, 61-90, 91+ days.
     - Group by profile and authority.
-  - [ ] 6.8.2 Implement `analyze revocations`.
+  - [x] 6.8.2 Implement `analyze revocations`.
     - Counts by reason and month.
-  - [ ] 6.8.3 Implement `analyze intermediates`.
+  - [x] 6.8.3 Implement `analyze intermediates`.
     - Remaining validity, algorithm, path length, parent.
     - Emit findings for intermediates expiring within 90 days.
-  - [ ] 6.8.4 Implement `analyze algorithms`.
+  - [x] 6.8.4 Implement `analyze algorithms`.
     - Counts by algorithm and profile.
     - Emit findings for algorithms not in policy.
-  - [ ] 6.8.5 Implement `analyze policy`.
+  - [x] 6.8.5 Implement `analyze policy`.
     - Emit findings for certificates exceeding current max validity, disallowed algorithms, disallowed wildcards, and disallowed custom OIDs.
-  - [ ] 6.8.6 Add tests with deterministic clocks and fixtures.
+  - [x] 6.8.6 Add tests with deterministic clocks and fixtures.
 
-- [ ] **6.9 Implement audit query**
-  - [ ] 6.9.1 Delegate to `AuditLog::list`.
-  - [ ] 6.9.2 Validate limit default 100 and maximum 10,000.
-  - [ ] 6.9.3 Add tests for filters and ordering.
+- [x] **6.9 Implement audit query**
+  - [x] 6.9.1 Delegate to `AuditLog::list`.
+  - [x] 6.9.2 Validate limit default 100 and maximum 10,000.
+  - [x] 6.9.3 Add tests for filters and ordering.
 
-- [ ] **6.10 Implement doctor**
-  - [ ] 6.10.1 Implement checks.
+- [x] **6.10 Implement doctor**
+  - [x] 6.10.1 Implement checks.
     - `ROOT_MISSING`: error.
     - `ROOT_EXPIRED`: error.
     - `ROOT_EXPIRING_SOON`: warning when less than 365 days remain.
@@ -1404,53 +1404,53 @@ This phase owns `chainkeeper-engine`. It consumes only the frozen traits from `c
     - `INDEX_DRIFT`: warning.
     - `AUDIT_INVALID`: error.
     - `UNENCRYPTED_CA_KEY`: warning.
-  - [ ] 6.10.2 Implement exit semantics.
+  - [x] 6.10.2 Implement exit semantics.
     - Any error finding returns `DoctorReport::has_errors = true`.
     - Warnings alone do not set errors.
-  - [ ] 6.10.3 Add tests for every finding using targeted broken fixtures.
-  - [ ] 6.10.4 Add a clean-repository test asserting zero findings.
+  - [x] 6.10.3 Add tests for every finding using targeted broken fixtures.
+  - [x] 6.10.4 Add a clean-repository test asserting zero findings.
 
-- [ ] **6.11 Implement diff**
-  - [ ] 6.11.1 Read last publish manifest `source_commit`.
-  - [ ] 6.11.2 Call `GitRepository::diff(source_commit, HEAD)`.
-  - [ ] 6.11.3 Categorize changes.
+- [x] **6.11 Implement diff**
+  - [x] 6.11.1 Read last publish manifest `source_commit`.
+  - [x] 6.11.2 Call `GitRepository::diff(source_commit, HEAD)`.
+  - [x] 6.11.3 Categorize changes.
     - Certificates: `certificates/`.
     - Revocations: `revocations/`.
     - CRLs: `crls/`.
     - Policy: `policy/` and `profiles/`.
     - Audits: `audit/`.
     - Publish: `publish/`.
-  - [ ] 6.11.4 Support `--since <rev>`.
-  - [ ] 6.11.5 Return `NotFound` when no manifest exists and no `--since` is supplied.
-  - [ ] 6.11.6 Add tests for each category and for no changes.
+  - [x] 6.11.4 Support `--since <rev>`.
+  - [x] 6.11.5 Return `NotFound` when no manifest exists and no `--since` is supplied.
+  - [x] 6.11.6 Add tests for each category and for no changes.
 
-- [ ] **6.12 Implement publish and index delegation**
-  - [ ] 6.12.1 Implement `publish` delegating to `PublishBuilder`.
-  - [ ] 6.12.2 Append `PUBLISH_COMPLETED`.
-  - [ ] 6.12.3 Commit `publish/` and audit event.
-  - [ ] 6.12.4 Implement `rebuild_index` delegating to `IndexStore::rebuild`.
-  - [ ] 6.12.5 Append `INDEX_REBUILT`.
-  - [ ] 6.12.6 Commit index metadata and moved files.
-  - [ ] 6.12.7 Add tests with fake publish builder.
+- [x] **6.12 Implement publish and index delegation**
+  - [x] 6.12.1 Implement `publish` delegating to `PublishBuilder`.
+  - [x] 6.12.2 Append `PUBLISH_COMPLETED`.
+  - [x] 6.12.3 Commit `publish/` and audit event.
+  - [x] 6.12.4 Implement `rebuild_index` delegating to `IndexStore::rebuild`.
+  - [x] 6.12.5 Append `INDEX_REBUILT`.
+  - [x] 6.12.6 Commit index metadata and moved files.
+  - [x] 6.12.7 Add tests with fake publish builder.
 
-- [ ] **6.13 Add engine failure-injection tests**
-  - [ ] 6.13.1 Fail provider after key generation and assert key is deleted.
-  - [ ] 6.13.2 Fail index write after certificate write and assert certificate files are deleted.
-  - [ ] 6.13.3 Fail audit append after index write and assert certificate, metadata, and index rows are rolled back.
-  - [ ] 6.13.4 Fail Git commit after audit and assert operation returns error with uncommitted files reported.
-  - [ ] 6.13.5 Fail CRL generation after revocation write and assert revocation files are rolled back.
+- [x] **6.13 Add engine failure-injection tests**
+  - [x] 6.13.1 Fail provider after key generation and assert key is deleted.
+  - [x] 6.13.2 Fail index write after certificate write and assert certificate files are deleted.
+  - [x] 6.13.3 Fail audit append after index write and assert certificate, metadata, and index rows are rolled back.
+  - [x] 6.13.4 Fail Git commit after audit and assert operation returns error with uncommitted files reported.
+  - [x] 6.13.5 Fail CRL generation after revocation write and assert revocation files are rolled back.
 
 ### Acceptance Criteria
 
-- [ ] `cargo test --quiet -p chainkeeper-engine` passes.
-- [ ] Engine tests run with fakes only and do not require OpenSSL, SQLite, or Git.
-- [ ] A test covers init, root, intermediate, OCSP signer, issue, revoke, replace, inspect, search, tree, analyze, audit, doctor, diff, publish, and rebuild.
-- [ ] A test asserts policy failure creates no files and no commit.
-- [ ] A test asserts every mutating success creates exactly one Git commit.
-- [ ] A test asserts failure injection rolls back created files and index rows.
-- [ ] A test asserts doctor emits every documented finding code.
-- [ ] A test asserts diff categorizes all change types.
-- [ ] `cargo clippy -p chainkeeper-engine --all-targets -- -D warnings` passes.
+- [x] `cargo test --quiet -p chainkeeper-engine` passes.
+- [x] Engine tests run with fakes only and do not require OpenSSL, SQLite, or Git.
+- [x] A test covers init, root, intermediate, OCSP signer, issue, revoke, replace, inspect, search, tree, analyze, audit, doctor, diff, publish, and rebuild.
+- [x] A test asserts policy failure creates no files and no commit.
+- [x] A test asserts every mutating success creates exactly one Git commit.
+- [x] A test asserts failure injection rolls back created files and index rows.
+- [x] A test asserts doctor emits every documented finding code.
+- [x] A test asserts diff categorizes all change types.
+- [x] `cargo clippy -p chainkeeper-engine --all-targets -- -D warnings` passes.
 
 ---
 
