@@ -1,0 +1,12 @@
+version: 1
+name: ocsp
+authority: ocsp
+algorithm: ecdsa-p256
+validity_days: 90
+key_usage:
+  - digitalSignature
+eku:
+  - ocspSigning
+san_required: false
+san_types: []
+allow_custom_oid: false

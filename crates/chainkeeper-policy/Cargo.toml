@@ -11,6 +11,10 @@ authors.workspace = true
 
 [dependencies]
 chainkeeper-core = { workspace = true }
+serde_yaml_ng = { workspace = true }
+
+[dev-dependencies]
+time = { workspace = true }
 
 [lints]
 workspace = true

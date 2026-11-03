@@ -1,0 +1,15 @@
+version: 1
+name: tls-client
+authority: tls
+algorithm: ecdsa-p256
+validity_days: 397
+key_usage:
+  - digitalSignature
+eku:
+  - clientAuth
+san_required: true
+san_types:
+  - dns
+  - email
+  - ip
+allow_custom_oid: false

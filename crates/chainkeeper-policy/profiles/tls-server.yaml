@@ -1,0 +1,15 @@
+version: 1
+name: tls-server
+authority: tls
+algorithm: ecdsa-p256
+validity_days: 397
+key_usage:
+  - digitalSignature
+  - keyEncipherment
+eku:
+  - serverAuth
+san_required: true
+san_types:
+  - dns
+  - ip
+allow_custom_oid: false

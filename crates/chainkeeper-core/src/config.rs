@@ -13,6 +13,12 @@ use crate::profile::{KeyUsage, builtin_profile_names};
 /// Configuration schema version accepted by V1.
 pub const CONFIG_VERSION: u32 = 1;
 
+/// Longest leaf certificate validity allowed by the policy layer.
+pub const MAX_LEAF_VALIDITY_DAYS: u32 = 397;
+
+/// Largest subject alternative name count allowed by the policy layer.
+pub const MAX_SANS: usize = 1000;
+
 fn check_version(version: u32, object: &str) -> Result<(), ChainkeeperError> {
     if version == CONFIG_VERSION {
         Ok(())
@@ -109,6 +115,9 @@ impl TenantConfig {
 /// Repository-wide issuance policy stored in `policy/policy.yaml`.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
+// The policy file mirrors the documented YAML schema; grouping booleans into
+// nested types would break that schema, so the flat shape is intentional.
+#[allow(clippy::struct_excessive_bools)]
 pub struct Policy {
     /// Configuration schema version, always [`CONFIG_VERSION`].
     pub version: u32,
@@ -129,6 +138,9 @@ pub struct Policy {
     pub allowed_san_suffixes: Vec<String>,
     /// Whether the common name must match a SAN entry.
     pub cn_must_match_san: bool,
+    /// Whether critical custom OID extensions are accepted.
+    #[serde(default)]
+    pub allow_critical_custom_oid: bool,
 }
 
 impl Default for Policy {
@@ -143,6 +155,7 @@ impl Default for Policy {
             max_sans: 100,
             allowed_san_suffixes: Vec::new(),
             cn_must_match_san: true,
+            allow_critical_custom_oid: false,
         }
     }
 }
@@ -161,6 +174,12 @@ impl Policy {
                 "max_validity_days must be positive",
             ));
         }
+        if self.max_validity_days > MAX_LEAF_VALIDITY_DAYS {
+            return Err(ChainkeeperError::config(format!(
+                "max_validity_days {} exceeds the {MAX_LEAF_VALIDITY_DAYS} day limit",
+                self.max_validity_days
+            )));
+        }
         if self.allowed_algorithms.is_empty() {
             return Err(ChainkeeperError::config(
                 "allowed_algorithms must not be empty",
@@ -173,6 +192,12 @@ impl Policy {
         }
         if self.max_sans == 0 {
             return Err(ChainkeeperError::config("max_sans must be positive"));
+        }
+        if self.max_sans > MAX_SANS {
+            return Err(ChainkeeperError::config(format!(
+                "max_sans {} exceeds the {MAX_SANS} entry limit",
+                self.max_sans
+            )));
         }
         for suffix in &self.allowed_san_suffixes {
             if suffix.is_empty()
@@ -334,6 +359,22 @@ mod tests {
         assert_eq!(policy.max_sans, 100);
         assert_eq!(policy.allowed_san_suffixes.len(), 0);
         assert!(policy.cn_must_match_san);
+        assert!(!policy.allow_critical_custom_oid);
+    }
+
+    #[test]
+    fn policy_rejects_out_of_range_limits() {
+        let policy = Policy {
+            max_validity_days: 398,
+            ..Policy::default()
+        };
+        assert!(policy.validate().is_err());
+
+        let policy = Policy {
+            max_sans: 1001,
+            ..Policy::default()
+        };
+        assert!(policy.validate().is_err());
     }
 
     #[test]

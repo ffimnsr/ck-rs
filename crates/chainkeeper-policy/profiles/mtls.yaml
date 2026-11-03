@@ -1,0 +1,16 @@
+version: 1
+name: mtls
+authority: tls
+algorithm: ecdsa-p256
+validity_days: 397
+key_usage:
+  - digitalSignature
+  - keyEncipherment
+eku:
+  - clientAuth
+  - serverAuth
+san_required: true
+san_types:
+  - dns
+  - ip
+allow_custom_oid: false

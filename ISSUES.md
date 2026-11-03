@@ -897,53 +897,53 @@ This phase owns `chainkeeper-policy`. It is a deterministic, side-effect-free cr
 
 ### Work Items
 
-- [ ] **4.1 Implement built-in profiles**
-  - [ ] 4.1.1 Add `tls-server.yaml`.
+- [x] **4.1 Implement built-in profiles**
+  - [x] 4.1.1 Add `tls-server.yaml`.
     - Authority `tls`, algorithm `ecdsa-p256`, validity 397 days.
     - Key usage `digitalSignature`, `keyEncipherment`.
     - EKU `serverAuth`.
     - SAN required, types `dns`, `ip`.
-  - [ ] 4.1.2 Add `tls-client.yaml`.
+  - [x] 4.1.2 Add `tls-client.yaml`.
     - Authority `tls`, algorithm `ecdsa-p256`, validity 397 days.
     - Key usage `digitalSignature`.
     - EKU `clientAuth`.
     - SAN required, types `dns`, `email`, `ip`.
-  - [ ] 4.1.3 Add `mtls.yaml`.
+  - [x] 4.1.3 Add `mtls.yaml`.
     - Authority `tls`, algorithm `ecdsa-p256`, validity 397 days.
     - Key usage `digitalSignature`, `keyEncipherment`.
     - EKU `clientAuth`, `serverAuth`.
     - SAN required, types `dns`, `ip`.
-  - [ ] 4.1.4 Add `smime.yaml`.
+  - [x] 4.1.4 Add `smime.yaml`.
     - Authority `smime`, algorithm `rsa3072`, validity 397 days.
     - Key usage `digitalSignature`, `keyEncipherment`, `contentCommitment`.
     - EKU `emailProtection`.
     - SAN required, types `email`.
-  - [ ] 4.1.5 Add `codesign.yaml`.
+  - [x] 4.1.5 Add `codesign.yaml`.
     - Authority `codesign`, algorithm `rsa3072`, validity 397 days.
     - Key usage `digitalSignature`.
     - EKU `codeSigning`.
     - SAN not required.
-  - [ ] 4.1.6 Add `ocsp.yaml`.
+  - [x] 4.1.6 Add `ocsp.yaml`.
     - Authority `ocsp`, algorithm `ecdsa-p256`, validity 90 days.
     - Key usage `digitalSignature`.
     - EKU `OCSPSigning`.
     - SAN not required.
-  - [ ] 4.1.7 Embed all six YAML files with `include_str!`.
-  - [ ] 4.1.8 Implement `ProfileRegistry::defaults`.
-  - [ ] 4.1.9 Add tests asserting exact profile fields.
-  - [ ] 4.1.10 Add tests that every default profile authority exists in the default authority set.
+  - [x] 4.1.7 Embed all six YAML files with `include_str!`.
+  - [x] 4.1.8 Implement `ProfileRegistry::defaults`.
+  - [x] 4.1.9 Add tests asserting exact profile fields.
+  - [x] 4.1.10 Add tests that every default profile authority exists in the default authority set.
 
-- [ ] **4.2 Implement profile validation**
-  - [ ] 4.2.1 Validate profile name matches its authority mapping.
-  - [ ] 4.2.2 Validate profile validity is positive and at most 397 days for leaf profiles.
-  - [ ] 4.2.3 Validate profile algorithm is one of the three supported algorithms.
-  - [ ] 4.2.4 Validate EKU and key usage are non-empty.
-  - [ ] 4.2.5 Validate SAN types are known.
-  - [ ] 4.2.6 Reject profile authority names not in `{tls, smime, codesign, ocsp}`.
-  - [ ] 4.2.7 Add table-driven tests for each rejection.
+- [x] **4.2 Implement profile validation**
+  - [x] 4.2.1 Validate profile name matches its authority mapping.
+  - [x] 4.2.2 Validate profile validity is positive and at most 397 days for leaf profiles.
+  - [x] 4.2.3 Validate profile algorithm is one of the three supported algorithms.
+  - [x] 4.2.4 Validate EKU and key usage are non-empty.
+  - [x] 4.2.5 Validate SAN types are known.
+  - [x] 4.2.6 Reject profile authority names not in `{tls, smime, codesign, ocsp}`.
+  - [x] 4.2.7 Add table-driven tests for each rejection.
 
-- [ ] **4.3 Implement policy parsing and defaults**
-  - [ ] 4.3.1 Add default `policy.yaml`.
+- [x] **4.3 Implement policy parsing and defaults**
+  - [x] 4.3.1 Add default `policy.yaml`.
     - `max_validity_days: 397`
     - `allowed_algorithms: [rsa3072, ecdsa-p256, ed25519]`
     - `allowed_profiles` contains all six profiles.
@@ -952,57 +952,57 @@ This phase owns `chainkeeper-policy`. It is a deterministic, side-effect-free cr
     - `max_sans: 100`
     - `allowed_san_suffixes: []`
     - `cn_must_match_san: true`
-  - [ ] 4.3.2 Reject `max_validity_days == 0` and values above 397.
-  - [ ] 4.3.3 Reject empty `allowed_algorithms` and empty `allowed_profiles`.
-  - [ ] 4.3.4 Reject `max_sans == 0` and values above 1000.
-  - [ ] 4.3.5 Normalize SAN suffixes to lowercase and reject leading dots except `example.com`.
-  - [ ] 4.3.6 Add tests for all invalid policy values.
+  - [x] 4.3.2 Reject `max_validity_days == 0` and values above 397.
+  - [x] 4.3.3 Reject empty `allowed_algorithms` and empty `allowed_profiles`.
+  - [x] 4.3.4 Reject `max_sans == 0` and values above 1000.
+  - [x] 4.3.5 Normalize SAN suffixes to lowercase and reject leading dots except `example.com`.
+  - [x] 4.3.6 Add tests for all invalid policy values.
 
-- [ ] **4.4 Implement issuance validation**
-  - [ ] 4.4.1 Validate profile is in `allowed_profiles`.
-  - [ ] 4.4.2 Validate request algorithm is allowed.
-  - [ ] 4.4.3 Apply profile algorithm when request algorithm is absent.
-  - [ ] 4.4.4 Validate effective validity.
+- [x] **4.4 Implement issuance validation**
+  - [x] 4.4.1 Validate profile is in `allowed_profiles`.
+  - [x] 4.4.2 Validate request algorithm is allowed.
+  - [x] 4.4.3 Apply profile algorithm when request algorithm is absent.
+  - [x] 4.4.4 Validate effective validity.
     - Use request validity when present.
     - Otherwise use profile validity.
     - Reject effective validity above `max_validity_days`.
     - Reject validity above authority remaining lifetime.
-  - [ ] 4.4.5 Validate subject.
+  - [x] 4.4.5 Validate subject.
     - CN required and non-empty for all profiles.
     - C must be exactly two uppercase ASCII letters when present.
     - Email must contain exactly one `@` and a non-empty local part and domain.
-  - [ ] 4.4.6 Validate SAN count is at most `max_sans`.
-  - [ ] 4.4.7 Validate SAN types match profile `san_types`.
-  - [ ] 4.4.8 Validate SAN required flag.
-  - [ ] 4.4.9 Validate DNS SAN syntax.
+  - [x] 4.4.6 Validate SAN count is at most `max_sans`.
+  - [x] 4.4.7 Validate SAN types match profile `san_types`.
+  - [x] 4.4.8 Validate SAN required flag.
+  - [x] 4.4.9 Validate DNS SAN syntax.
     - Lowercase ASCII letters, digits, hyphen, and dot only.
     - No empty labels.
     - No label longer than 63 characters.
     - Total name at most 253 characters.
-  - [ ] 4.4.10 Validate wildcard DNS SANs.
+  - [x] 4.4.10 Validate wildcard DNS SANs.
     - Only `*.` prefix allowed.
     - Reject `*` elsewhere.
     - Reject wildcard when policy disallows it.
     - Reject wildcard for S/MIME and code-signing profiles.
-  - [ ] 4.4.11 Validate IP SANs with `std::net::IpAddr`.
-  - [ ] 4.4.12 Validate email SANs.
-  - [ ] 4.4.13 Validate URI SANs.
+  - [x] 4.4.11 Validate IP SANs with `std::net::IpAddr`.
+  - [x] 4.4.12 Validate email SANs.
+  - [x] 4.4.13 Validate URI SANs.
     - Require scheme `https`, `spiffe`, or `urn`.
     - Reject spaces and control characters.
-  - [ ] 4.4.14 Validate `allowed_san_suffixes`.
+  - [x] 4.4.14 Validate `allowed_san_suffixes`.
     - Non-empty list means every DNS SAN must equal or end with `.<suffix>`.
     - Wildcards are checked after stripping the `*.` prefix.
-  - [ ] 4.4.15 Validate CN-to-SAN matching when enabled.
-  - [ ] 4.4.16 Add table-driven tests for every rule, including boundary values.
+  - [x] 4.4.15 Validate CN-to-SAN matching when enabled.
+  - [x] 4.4.16 Add table-driven tests for every rule, including boundary values.
 
-- [ ] **4.5 Implement custom OID validation**
-  - [ ] 4.5.1 Validate OID syntax.
+- [x] **4.5 Implement custom OID validation**
+  - [x] 4.5.1 Validate OID syntax.
     - At least two arcs.
     - Digits only.
     - No leading zero in arcs except `0`.
     - First arc in `0..=2`.
     - Second arc in `0..=39` when first arc is `0` or `1`.
-  - [ ] 4.5.2 Reject reserved OIDs.
+  - [x] 4.5.2 Reject reserved OIDs.
     - `2.5.29.17` SAN
     - `2.5.29.19` basicConstraints
     - `2.5.29.15` keyUsage
@@ -1011,43 +1011,43 @@ This phase owns `chainkeeper-policy`. It is a deterministic, side-effect-free cr
     - `2.5.29.35` authorityKeyIdentifier
     - `2.5.29.31` cRLDistributionPoints
     - `1.3.6.1.5.5.7.1.1` authorityInfoAccess
-  - [ ] 4.5.3 Reject duplicate OIDs in one request.
-  - [ ] 4.5.4 Reject when `allow_custom_oid` is false.
-  - [ ] 4.5.5 Reject both `value_utf8` and `value_hex` set.
-  - [ ] 4.5.6 Reject neither value set.
-  - [ ] 4.5.7 Reject `value_hex` with non-hex characters or odd length.
-  - [ ] 4.5.8 Reject `value_utf8` larger than 1024 bytes and `value_hex` larger than 4096 bytes.
-  - [ ] 4.5.9 Reject critical custom extensions when policy disallows critical custom OIDs; add policy field `allow_critical_custom_oid` default `false`.
-  - [ ] 4.5.10 Add tests for valid and invalid OIDs and values.
+  - [x] 4.5.3 Reject duplicate OIDs in one request.
+  - [x] 4.5.4 Reject when `allow_custom_oid` is false.
+  - [x] 4.5.5 Reject both `value_utf8` and `value_hex` set.
+  - [x] 4.5.6 Reject neither value set.
+  - [x] 4.5.7 Reject `value_hex` with non-hex characters or odd length.
+  - [x] 4.5.8 Reject `value_utf8` larger than 1024 bytes and `value_hex` larger than 4096 bytes.
+  - [x] 4.5.9 Reject critical custom extensions when policy disallows critical custom OIDs; add policy field `allow_critical_custom_oid` default `false`.
+  - [x] 4.5.10 Add tests for valid and invalid OIDs and values.
 
-- [ ] **4.6 Implement profile/policy cross-validation**
-  - [ ] 4.6.1 Validate every profile authority has a matching authority config when a repository is present.
-  - [ ] 4.6.2 Validate profile algorithm is allowed by policy.
-  - [ ] 4.6.3 Validate profile validity is at most policy max.
-  - [ ] 4.6.4 Return `DoctorFinding` codes `POLICY_PROFILE_MISSING`, `POLICY_ALGORITHM_DENIED`, `POLICY_VALIDITY_EXCEEDED`.
-  - [ ] 4.6.5 Add tests using synthetic authority sets.
+- [x] **4.6 Implement profile/policy cross-validation**
+  - [x] 4.6.1 Validate every profile authority has a matching authority config when a repository is present.
+  - [x] 4.6.2 Validate profile algorithm is allowed by policy.
+  - [x] 4.6.3 Validate profile validity is at most policy max.
+  - [x] 4.6.4 Return `DoctorFinding` codes `POLICY_PROFILE_MISSING`, `POLICY_ALGORITHM_DENIED`, `POLICY_VALIDITY_EXCEEDED`.
+  - [x] 4.6.5 Add tests using synthetic authority sets.
 
-- [ ] **4.7 Add property tests**
-  - [ ] 4.7.1 Add property tests for DNS SAN validation.
+- [x] **4.7 Add property tests**
+  - [x] 4.7.1 Add property tests for DNS SAN validation.
     - Generated valid names always parse.
     - Generated invalid names with spaces or empty labels always fail.
-  - [ ] 4.7.2 Add property tests for OID validation.
+  - [x] 4.7.2 Add property tests for OID validation.
     - Serialized valid OIDs round-trip.
     - OIDs with leading zeros fail.
-  - [ ] 4.7.3 Add property tests for CN matching.
+  - [x] 4.7.3 Add property tests for CN matching.
     - If CN equals a DNS SAN, validation passes.
     - If CN differs from all SANs and matching is enabled, validation fails.
 
 ### Acceptance Criteria
 
-- [ ] `cargo test --quiet -p chainkeeper-policy` passes.
-- [ ] Tests assert exact defaults for all six built-in profiles.
-- [ ] Tests assert every policy validation rule with boundary values.
-- [ ] Tests assert wildcard acceptance only for leftmost `*.` when enabled.
-- [ ] Tests assert custom OID syntax, reserved OID, duplicate OID, value encoding, size, and criticality rules.
-- [ ] Tests assert CN-to-SAN matching behavior.
-- [ ] Property tests run under `cargo test --quiet -p chainkeeper-policy`.
-- [ ] `cargo clippy -p chainkeeper-policy --all-targets -- -D warnings` passes.
+- [x] `cargo test --quiet -p chainkeeper-policy` passes.
+- [x] Tests assert exact defaults for all six built-in profiles.
+- [x] Tests assert every policy validation rule with boundary values.
+- [x] Tests assert wildcard acceptance only for leftmost `*.` when enabled.
+- [x] Tests assert custom OID syntax, reserved OID, duplicate OID, value encoding, size, and criticality rules.
+- [x] Tests assert CN-to-SAN matching behavior.
+- [x] Property tests run under `cargo test --quiet -p chainkeeper-policy`.
+- [x] `cargo clippy -p chainkeeper-policy --all-targets -- -D warnings` passes.
 
 ---
 

@@ -1,0 +1,19 @@
+version: 1
+max_validity_days: 397
+allowed_algorithms:
+  - rsa3072
+  - ecdsa-p256
+  - ed25519
+allowed_profiles:
+  - tls-server
+  - tls-client
+  - mtls
+  - smime
+  - codesign
+  - ocsp
+allow_custom_oid: true
+allow_wildcards: false
+max_sans: 100
+allowed_san_suffixes: []
+cn_must_match_san: true
+allow_critical_custom_oid: false

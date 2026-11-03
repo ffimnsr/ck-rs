@@ -1,0 +1,15 @@
+version: 1
+name: smime
+authority: smime
+algorithm: rsa3072
+validity_days: 397
+key_usage:
+  - digitalSignature
+  - keyEncipherment
+  - contentCommitment
+eku:
+  - emailProtection
+san_required: true
+san_types:
+  - email
+allow_custom_oid: false

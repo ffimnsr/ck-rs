@@ -24,7 +24,10 @@ pub mod request;
 pub mod time_util;
 pub mod traits;
 
-pub use config::{AuthorityConfig, AuthorityKind, CONFIG_VERSION, Policy, TenantConfig};
+pub use config::{
+    AuthorityConfig, AuthorityKind, CONFIG_VERSION, MAX_LEAF_VALIDITY_DAYS, MAX_SANS, Policy,
+    TenantConfig,
+};
 pub use crypto::{KeyAlgorithm, SignatureScheme};
 pub use error::{ChainkeeperError, ErrorDetail, ErrorKind, ErrorSource};
 pub use ids::{AuthorityName, EventId, ProductionIdGenerator, ProfileName, Serial, TenantId};

@@ -1,0 +1,12 @@
+version: 1
+name: codesign
+authority: codesign
+algorithm: rsa3072
+validity_days: 397
+key_usage:
+  - digitalSignature
+eku:
+  - codeSigning
+san_required: false
+san_types: []
+allow_custom_oid: false

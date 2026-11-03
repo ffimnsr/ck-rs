@@ -309,6 +309,8 @@ name = "chainkeeper-policy"
 version = "0.1.0"
 dependencies = [
  "chainkeeper-core",
+ "serde_yaml_ng",
+ "time",
 ]
 
 [[package]]
