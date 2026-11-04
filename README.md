@@ -50,9 +50,18 @@ assert!(!Policy::default().allowed_algorithms.is_empty());
 
 ## Verification
 
+Tasks live in `tasks.yaml` and run with [`mk`](https://github.com/ffimnsr/mk-rs):
+
 ```sh
-make verify
-make verify-phase CRATE=chainkeeper-engine
+mk run verify
+CRATE=chainkeeper-engine mk run verify-phase
+```
+
+Smoke test the compiled binary against a throwaway repository:
+
+```sh
+mk run smoke
+CK_BIN=target/release/ck mk run smoke
 ```
 
 Repository internals live in `docs/ARCHITECTURE.md` and `docs/DESIGN.md`.

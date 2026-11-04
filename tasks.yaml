@@ -5,3 +5,61 @@ tasks:
     commands:
       - echo "Hello, World!"
     description: Sample greet command
+
+  build:
+    description: Build every workspace member
+    commands:
+      - cargo build --workspace
+
+  test:
+    description: Run the workspace test suite
+    commands:
+      - cargo test --quiet --workspace --all-features
+
+  fmt:
+    description: Check formatting
+    commands:
+      - cargo fmt --all --check
+
+  clippy:
+    description: Lint every target and feature set
+    commands:
+      - cargo clippy --workspace --all-targets --all-features -- -D warnings
+
+  doc:
+    description: Build rustdoc with warnings denied
+    commands:
+      - RUSTDOCFLAGS="-D warnings" cargo doc --workspace --no-deps
+
+  deny:
+    description: Check advisories, bans, licenses, and sources
+    commands:
+      - cargo deny check
+
+  verify:
+    description: Full pre-release gate, one stage per dependency
+    depends_on:
+      - fmt
+      - clippy
+      - test
+      - doc
+      - deny
+    commands:
+      - 'echo "verify: all stages passed"'
+
+  # Per-crate gate: `CRATE=chainkeeper-engine mk run verify-phase`.
+  verify-phase:
+    description: Run clippy, tests, and docs for one workspace crate (set CRATE)
+    depends_on:
+      - fmt
+    commands:
+      - 'cargo clippy -p "${CRATE:?set CRATE to a workspace crate name}" --all-targets --all-features -- -D warnings'
+      - 'cargo test --quiet -p "${CRATE:?set CRATE to a workspace crate name}" --all-features'
+      - 'RUSTDOCFLAGS="-D warnings" cargo doc -p "${CRATE:?set CRATE to a workspace crate name}" --no-deps'
+
+  # Override the binary with `CK_BIN=target/release/ck mk run smoke`.
+  smoke:
+    description: Happy-path check against the compiled ck binary
+    commands:
+      - cargo build -p chainkeeper-cli
+      - ./scripts/smoke.sh
