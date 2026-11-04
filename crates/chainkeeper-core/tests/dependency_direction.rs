@@ -44,7 +44,13 @@ fn allowed(name: &str) -> BTreeSet<&'static str> {
             "chainkeeper-git",
             "chainkeeper-publish",
         ]),
-        "chainkeeper-server" => BTreeSet::from(["chainkeeper-core", "chainkeeper-engine"]),
+        "chainkeeper-server" => BTreeSet::from([
+            "chainkeeper-core",
+            "chainkeeper-store",
+            "chainkeeper-publish",
+            "chainkeeper-git",
+            "chainkeeper-audit",
+        ]),
         _ => BTreeSet::from(["chainkeeper-core"]),
     }
 }

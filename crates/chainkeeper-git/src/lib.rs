@@ -15,6 +15,7 @@ mod ignore;
 mod message;
 mod repo;
 mod signing;
+mod sync;
 mod transaction;
 
 pub use identity::{GitIdentity, resolve_signature};
@@ -25,4 +26,5 @@ pub use ignore::{
 pub use message::CommitMessage;
 pub use repo::{GitLogEntry, GitRepo, WORKTREE};
 pub use signing::{CommitSigner, GpgCommitSigner, signing_enabled};
+pub use sync::SyncOutcome;
 pub use transaction::{DEFAULT_TRANSACTION_TIMEOUT, RepositoryTransaction};

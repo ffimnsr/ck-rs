@@ -80,7 +80,7 @@ thiserror = "2"
 time = { version = "0.3", features = ["serde", "formatting", "parsing", "macros"] }
 tokio = { version = "1", features = ["full"] }
 toml = "1"
-tower-http = { version = "0.7", features = ["fs", "trace"] }
+tower-http = { version = "0.7", features = ["fs", "trace", "compression-gzip", "timeout", "limit"] }
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
 ulid = { version = "3", features = ["serde"] }

@@ -816,6 +816,14 @@ impl CertificateStore for FileStore {
     fn list_authorities(&self) -> Result<Vec<AuthorityRecord>, ChainkeeperError> {
         self.read_authorities()
     }
+
+    fn list_crls(&self) -> Result<Vec<CrlRecord>, ChainkeeperError> {
+        Ok(self
+            .read_crls()?
+            .into_iter()
+            .map(|indexed| indexed.record)
+            .collect())
+    }
 }
 
 impl FileStore {

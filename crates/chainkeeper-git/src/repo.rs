@@ -152,7 +152,7 @@ impl GitRepo {
         Ok(entries)
     }
 
-    fn repository(&self) -> Result<Repository, ChainkeeperError> {
+    pub(crate) fn repository(&self) -> Result<Repository, ChainkeeperError> {
         Repository::open(&self.root).map_err(|error| {
             git(format!(
                 "could not open git repository {}: {error}",

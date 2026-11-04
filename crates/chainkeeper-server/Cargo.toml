@@ -15,9 +15,29 @@ path = "src/main.rs"
 
 [dependencies]
 anyhow = { workspace = true }
+arc-swap = { workspace = true }
+axum = { workspace = true }
+chainkeeper-audit = { workspace = true }
 chainkeeper-core = { workspace = true }
+chainkeeper-git = { workspace = true }
+chainkeeper-publish = { workspace = true }
+chainkeeper-store = { workspace = true }
 clap = { workspace = true }
+notify = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+serde_yaml_ng = { workspace = true }
+sha2 = { workspace = true }
+time = { workspace = true }
+tokio = { workspace = true }
+tower-http = { workspace = true }
 tracing = { workspace = true }
+
+[dev-dependencies]
+chainkeeper-testkit = { workspace = true }
+git2 = { workspace = true }
+tracing-subscriber = { workspace = true }
+tempfile = { workspace = true }
 
 [build-dependencies]
 vergen-gix = { workspace = true }

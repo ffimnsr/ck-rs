@@ -263,6 +263,18 @@ pub trait CertificateStore: Send + Sync {
     ///
     /// Returns [`ChainkeeperError::Storage`] when a directory cannot be read.
     fn list_authorities(&self) -> Result<Vec<AuthorityRecord>, ChainkeeperError>;
+
+    /// Lists every generated CRL.
+    ///
+    /// The read-only server needs CRL metadata without a [`CrlManager`], which
+    /// would otherwise require signing keys the server must never hold.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`ChainkeeperError::Storage`] when a CRL cannot be read.
+    fn list_crls(&self) -> Result<Vec<CrlRecord>, ChainkeeperError> {
+        Ok(Vec::new())
+    }
 }
 
 /// Disposable SQLite index.

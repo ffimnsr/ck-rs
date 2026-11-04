@@ -1935,8 +1935,8 @@ This phase owns `chainkeeper-server`. Server handlers consume `ServerStateProvid
 
 ### Work Items
 
-- [ ] **10.1 Implement server configuration**
-  - [ ] 10.1.1 Add config struct.
+- [x] **10.1 Implement server configuration**
+  - [x] 10.1.1 Add config struct.
     - `bind` default `0.0.0.0:8080`.
     - `repo` default current directory.
     - `publish_dir` default `.chainkeeper/publish`.
@@ -1945,132 +1945,132 @@ This phase owns `chainkeeper-server`. Server handlers consume `ServerStateProvid
     - `branch` default `main`.
     - `sync_remote` default false.
     - `ocsp_key_path` default `CHAINKEEPER_OCSP_KEY_PATH`.
-  - [ ] 10.1.2 Load from `server.yaml` and environment overrides.
-  - [ ] 10.1.3 Validate `repo` exists and is a Git repository.
-  - [ ] 10.1.4 Validate `publish_dir` is outside the repository or under `.chainkeeper/`.
-  - [ ] 10.1.5 Add tests for defaults, overrides, and invalid paths.
+  - [x] 10.1.2 Load from `server.yaml` and environment overrides.
+  - [x] 10.1.3 Validate `repo` exists and is a Git repository.
+  - [x] 10.1.4 Validate `publish_dir` is outside the repository or under `.chainkeeper/`.
+  - [x] 10.1.5 Add tests for defaults, overrides, and invalid paths.
 
-- [ ] **10.2 Implement application state**
-  - [ ] 10.2.1 Implement `AppState`.
+- [x] **10.2 Implement application state**
+  - [x] 10.2.1 Implement `AppState`.
     - `Arc<dyn ServerStateProvider>`.
     - `Arc<dyn OcspResponder>`.
     - `publish_dir`.
-  - [ ] 10.2.2 Implement `ServerSnapshot` loading from store and publish manifest.
-  - [ ] 10.2.3 Build lookup maps by serial, profile, authority, and status.
-  - [ ] 10.2.4 Add tests for snapshot construction.
+  - [x] 10.2.2 Implement `ServerSnapshot` loading from store and publish manifest.
+  - [x] 10.2.3 Build lookup maps by serial, profile, authority, and status.
+  - [x] 10.2.4 Add tests for snapshot construction.
 
-- [ ] **10.3 Implement API routes**
-  - [ ] 10.3.1 `GET /api/v1/certificates`.
+- [x] **10.3 Implement API routes**
+  - [x] 10.3.1 `GET /api/v1/certificates`.
     - Query: `status`, `profile`, `authority`, `expires_within`, `limit`, `cursor`.
     - Response: `{ items, next_cursor }`.
-  - [ ] 10.3.2 `GET /api/v1/certificates/{serial}`.
+  - [x] 10.3.2 `GET /api/v1/certificates/{serial}`.
     - Validate serial path segment.
     - Return 404 JSON on missing.
-  - [ ] 10.3.3 `GET /api/v1/root`.
+  - [x] 10.3.3 `GET /api/v1/root`.
     - Return root certificate PEM with `application/x-pem-file`.
-  - [ ] 10.3.4 `GET /api/v1/intermediates`.
+  - [x] 10.3.4 `GET /api/v1/intermediates`.
     - Return JSON list with name, kind, parent, algorithm, not_before, not_after, pem_url.
-  - [ ] 10.3.5 `GET /api/v1/revocations`.
+  - [x] 10.3.5 `GET /api/v1/revocations`.
     - Return JSON list.
-  - [ ] 10.3.6 `GET /api/v1/crls`.
+  - [x] 10.3.6 `GET /api/v1/crls`.
     - Return JSON list with authority, number, this_update, next_update, revoked_count, url.
-  - [ ] 10.3.7 `GET /api/v1/audit`.
+  - [x] 10.3.7 `GET /api/v1/audit`.
     - Query: `action`, `object_type`, `object_id`, `since`, `until`, `limit`, `cursor`.
-  - [ ] 10.3.8 `GET /api/v1/health`.
+  - [x] 10.3.8 `GET /api/v1/health`.
     - Return `ServerHealth`.
-  - [ ] 10.3.9 Add tests for each endpoint.
+  - [x] 10.3.9 Add tests for each endpoint.
     - Assert status code, content type, body shape, and 404/400 paths.
     - Assert no endpoint accepts POST.
 
-- [ ] **10.4 Implement artifact routes**
-  - [ ] 10.4.1 `GET /root.pem`.
-  - [ ] 10.4.2 `GET /intermediates/{name}.pem`.
-  - [ ] 10.4.3 Aliases: `/tls-intermediate.pem`, `/smime-intermediate.pem`, `/codesign-intermediate.pem`, `/ocsp-intermediate.pem`.
-  - [ ] 10.4.4 `GET /crl/{authority}.crl`.
-  - [ ] 10.4.5 `GET /crl/{authority}.crl.pem`.
-  - [ ] 10.4.6 `GET /aia/{authority}.pem`.
-  - [ ] 10.4.7 `GET /chains/{profile}/{serial}.pem`.
-  - [ ] 10.4.8 Set `Content-Type` and `Cache-Control: public, max-age=300`.
-  - [ ] 10.4.9 Add `ETag` from manifest SHA-256 and support `If-None-Match`.
-  - [ ] 10.4.10 Add `Last-Modified` and support `If-Modified-Since`.
-  - [ ] 10.4.11 Reject path traversal and missing manifest entries with 404.
-  - [ ] 10.4.12 Add tests for content type, caching, conditional requests, and traversal.
+- [x] **10.4 Implement artifact routes**
+  - [x] 10.4.1 `GET /root.pem`.
+  - [x] 10.4.2 `GET /intermediates/{name}.pem`.
+  - [x] 10.4.3 Aliases: `/tls-intermediate.pem`, `/smime-intermediate.pem`, `/codesign-intermediate.pem`, `/ocsp-intermediate.pem`.
+  - [x] 10.4.4 `GET /crl/{authority}.crl`.
+  - [x] 10.4.5 `GET /crl/{authority}.crl.pem`.
+  - [x] 10.4.6 `GET /aia/{authority}.pem`.
+  - [x] 10.4.7 `GET /chains/{profile}/{serial}.pem`.
+  - [x] 10.4.8 Set `Content-Type` and `Cache-Control: public, max-age=300`.
+  - [x] 10.4.9 Add `ETag` from manifest SHA-256 and support `If-None-Match`.
+  - [x] 10.4.10 Add `Last-Modified` and support `If-Modified-Since`.
+  - [x] 10.4.11 Reject path traversal and missing manifest entries with 404.
+  - [x] 10.4.12 Add tests for content type, caching, conditional requests, and traversal.
 
-- [ ] **10.5 Implement OCSP route**
-  - [ ] 10.5.1 `POST /ocsp`.
-  - [ ] 10.5.2 Require `Content-Type: application/ocsp-request`.
-  - [ ] 10.5.3 Enforce 64 KiB body limit.
-  - [ ] 10.5.4 Call `OcspResponder::respond`.
-  - [ ] 10.5.5 Return `application/ocsp-response`.
-  - [ ] 10.5.6 Set `Cache-Control: public, max-age=3600`.
-  - [ ] 10.5.7 Return 405 with `Allow: POST` for GET.
-  - [ ] 10.5.8 Return 503 when responder not ready.
-  - [ ] 10.5.9 Add tests for valid request, malformed request, oversized body, wrong content type, GET, and not-ready.
+- [x] **10.5 Implement OCSP route**
+  - [x] 10.5.1 `POST /ocsp`.
+  - [x] 10.5.2 Require `Content-Type: application/ocsp-request`.
+  - [x] 10.5.3 Enforce 64 KiB body limit.
+  - [x] 10.5.4 Call `OcspResponder::respond`.
+  - [x] 10.5.5 Return `application/ocsp-response`.
+  - [x] 10.5.6 Set `Cache-Control: public, max-age=3600`.
+  - [x] 10.5.7 Return 405 with `Allow: POST` for GET.
+  - [x] 10.5.8 Return 503 when responder not ready.
+  - [x] 10.5.9 Add tests for valid request, malformed request, oversized body, wrong content type, GET, and not-ready.
 
-- [ ] **10.6 Implement health endpoints**
-  - [ ] 10.6.1 `GET /healthz` returns 200 when the process is alive.
-  - [ ] 10.6.2 `GET /readyz` returns 200 only when snapshot and OCSP are ready.
-  - [ ] 10.6.3 `/readyz` returns 503 with JSON errors when not ready.
-  - [ ] 10.6.4 Add tests for both states.
+- [x] **10.6 Implement health endpoints**
+  - [x] 10.6.1 `GET /healthz` returns 200 when the process is alive.
+  - [x] 10.6.2 `GET /readyz` returns 200 only when snapshot and OCSP are ready.
+  - [x] 10.6.3 `/readyz` returns 503 with JSON errors when not ready.
+  - [x] 10.6.4 Add tests for both states.
 
-- [ ] **10.7 Implement error handling**
-  - [ ] 10.7.1 Define JSON error shape `{ "error": { "code": "...", "message": "..." } }`.
-  - [ ] 10.7.2 Map `NotFound` to 404.
-  - [ ] 10.7.3 Map validation to 400.
-  - [ ] 10.7.4 Map conflict to 409.
-  - [ ] 10.7.5 Map internal errors to 500 without leaking paths or secrets.
-  - [ ] 10.7.6 Add tests for each mapping.
+- [x] **10.7 Implement error handling**
+  - [x] 10.7.1 Define JSON error shape `{ "error": { "code": "...", "message": "..." } }`.
+  - [x] 10.7.2 Map `NotFound` to 404.
+  - [x] 10.7.3 Map validation to 400.
+  - [x] 10.7.4 Map conflict to 409.
+  - [x] 10.7.5 Map internal errors to 500 without leaking paths or secrets.
+  - [x] 10.7.6 Add tests for each mapping.
 
-- [ ] **10.8 Implement Git watcher**
-  - [ ] 10.8.1 Watch `.git/HEAD` and `.git/refs` with `notify`.
-  - [ ] 10.8.2 Add OID polling every `poll_interval`.
-  - [ ] 10.8.3 Debounce bursts of events by 250 ms.
-  - [ ] 10.8.4 On change, read `HEAD`.
-  - [ ] 10.8.5 If OID unchanged, do nothing.
-  - [ ] 10.8.6 If `sync_remote` is true, fetch and fast-forward.
+- [x] **10.8 Implement Git watcher**
+  - [x] 10.8.1 Watch `.git/HEAD` and `.git/refs` with `notify`.
+  - [x] 10.8.2 Add OID polling every `poll_interval`.
+  - [x] 10.8.3 Debounce bursts of events by 250 ms.
+  - [x] 10.8.4 On change, read `HEAD`.
+  - [x] 10.8.5 If OID unchanged, do nothing.
+  - [x] 10.8.6 If `sync_remote` is true, fetch and fast-forward.
     - Refuse when working tree is dirty.
     - Refuse non-fast-forward.
-  - [ ] 10.8.7 Rebuild publish artifacts to `publish_dir`.
-  - [ ] 10.8.8 Reload snapshot and OCSP state.
-  - [ ] 10.8.9 Expose reload result in health.
-  - [ ] 10.8.10 Add tests with a temporary Git repository.
+  - [x] 10.8.7 Rebuild publish artifacts to `publish_dir`.
+  - [x] 10.8.8 Reload snapshot and OCSP state.
+  - [x] 10.8.9 Expose reload result in health.
+  - [x] 10.8.10 Add tests with a temporary Git repository.
     - Commit triggers reload.
     - Unchanged commit does not reload.
     - Dirty tree prevents remote sync.
     - Non-fast-forward prevents reset.
     - Reload failure preserves old snapshot.
 
-- [ ] **10.9 Implement lifecycle and observability**
-  - [ ] 10.9.1 Initialize tracing with request IDs.
-  - [ ] 10.9.2 Add request logging at `debug`, errors at `warn`.
-  - [ ] 10.9.3 Add graceful shutdown on SIGTERM and Ctrl-C.
-  - [ ] 10.9.4 Add 10-second request timeout.
-  - [ ] 10.9.5 Add 64 KiB body limit.
-  - [ ] 10.9.6 Add `tower-http` compression for JSON and text.
-  - [ ] 10.9.7 Add tests for graceful shutdown and timeout.
-  - [ ] 10.9.8 Add a test asserting logs do not contain private key markers.
+- [x] **10.9 Implement lifecycle and observability**
+  - [x] 10.9.1 Initialize tracing with request IDs.
+  - [x] 10.9.2 Add request logging at `debug`, errors at `warn`.
+  - [x] 10.9.3 Add graceful shutdown on SIGTERM and Ctrl-C.
+  - [x] 10.9.4 Add 10-second request timeout.
+  - [x] 10.9.5 Add 64 KiB body limit.
+  - [x] 10.9.6 Add `tower-http` compression for JSON and text.
+  - [x] 10.9.7 Add tests for graceful shutdown and timeout.
+  - [x] 10.9.8 Add a test asserting logs do not contain private key markers.
 
-- [ ] **10.10 Add security tests**
-  - [ ] 10.10.1 Assert no route other than `/ocsp` accepts POST, PUT, PATCH, or DELETE.
-  - [ ] 10.10.2 Assert server never reads `authorities/**/key.pem` except `ocsp-signer`.
-  - [ ] 10.10.3 Assert publish directory contains no private keys before serving.
-  - [ ] 10.10.4 Assert path traversal attempts return 400 or 404 and never read outside publish dir.
-  - [ ] 10.10.5 Assert malformed serial returns 400.
-  - [ ] 10.10.6 Assert unknown authority returns 404.
+- [x] **10.10 Add security tests**
+  - [x] 10.10.1 Assert no route other than `/ocsp` accepts POST, PUT, PATCH, or DELETE.
+  - [x] 10.10.2 Assert server never reads `authorities/**/key.pem` except `ocsp-signer`.
+  - [x] 10.10.3 Assert publish directory contains no private keys before serving.
+  - [x] 10.10.4 Assert path traversal attempts return 400 or 404 and never read outside publish dir.
+  - [x] 10.10.5 Assert malformed serial returns 400.
+  - [x] 10.10.6 Assert unknown authority returns 404.
 
 ### Acceptance Criteria
 
-- [ ] `cargo test --quiet -p chainkeeper-server` passes.
-- [ ] Tests cover every API and artifact route.
-- [ ] Tests assert read-only behavior for all routes except `POST /ocsp`.
-- [ ] Tests assert path traversal is rejected.
-- [ ] Tests assert conditional GET with ETag and Last-Modified.
-- [ ] Tests assert OCSP content type, body limit, and 405 for GET.
-- [ ] Tests assert health and readiness transitions.
-- [ ] Tests assert watcher reload on new commit and no reload on unchanged commit.
-- [ ] Tests assert failed reload preserves previous snapshot.
-- [ ] Tests assert server never reads root or intermediate private keys.
-- [ ] `cargo clippy -p chainkeeper-server --all-targets -- -D warnings` passes.
+- [x] `cargo test --quiet -p chainkeeper-server` passes.
+- [x] Tests cover every API and artifact route.
+- [x] Tests assert read-only behavior for all routes except `POST /ocsp`.
+- [x] Tests assert path traversal is rejected.
+- [x] Tests assert conditional GET with ETag and Last-Modified.
+- [x] Tests assert OCSP content type, body limit, and 405 for GET.
+- [x] Tests assert health and readiness transitions.
+- [x] Tests assert watcher reload on new commit and no reload on unchanged commit.
+- [x] Tests assert failed reload preserves previous snapshot.
+- [x] Tests assert server never reads root or intermediate private keys.
+- [x] `cargo clippy -p chainkeeper-server --all-targets -- -D warnings` passes.
 
 ---
 
