@@ -19,7 +19,9 @@ arc-swap = { workspace = true }
 axum = { workspace = true }
 chainkeeper-audit = { workspace = true }
 chainkeeper-core = { workspace = true }
+chainkeeper-engine = { workspace = true }
 chainkeeper-git = { workspace = true }
+chainkeeper-ocsp = { workspace = true }
 chainkeeper-publish = { workspace = true }
 chainkeeper-store = { workspace = true }
 clap = { workspace = true }

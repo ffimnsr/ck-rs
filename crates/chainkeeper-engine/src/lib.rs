@@ -29,10 +29,15 @@ mod messages;
 mod query;
 mod revocation;
 mod rollback;
+pub mod service;
 mod state;
 
 pub use deps::{AuthoritySigners, EngineDependencies};
 pub use engine::Engine;
+pub use service::{
+    FileSigners, OpenMode, ServiceOptions, finalize_init, open, open_service, open_with,
+    passphrase_from_env,
+};
 pub use state::{ChangeCategory, categorize as categorize_path};
 
 /// Default time a mutating operation waits for the repository lock.

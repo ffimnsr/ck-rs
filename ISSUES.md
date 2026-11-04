@@ -2096,8 +2096,8 @@ This phase owns workspace-level integration tests, the real service factory, the
 
 ### Work Items
 
-- [ ] **11.1 Wire the real CLI service**
-  - [ ] 11.1.1 Implement `chainkeeper_engine::open_service(repo: &Path) -> Result<Arc<dyn ChainkeeperService>>`.
+- [x] **11.1 Wire the real CLI service**
+  - [x] 11.1.1 Implement `chainkeeper_engine::open_service(repo: &Path) -> Result<Arc<dyn ChainkeeperService>>`.
     - Construct `RepositoryPaths`.
     - Open SQLite index.
     - Construct `FileCertificateStore`.
@@ -2108,138 +2108,138 @@ This phase owns workspace-level integration tests, the real service factory, the
     - Construct `CrlManager`.
     - Construct `PublishBuilder`.
     - Construct `Engine`.
-  - [ ] 11.1.2 Replace the Phase 1 stub factory with the real factory.
-  - [ ] 11.1.3 Ensure every CLI command uses the real factory outside tests.
-  - [ ] 11.1.4 Add a test that constructs the service in a temp repository and runs `doctor`.
+  - [x] 11.1.2 Replace the Phase 1 stub factory with the real factory.
+  - [x] 11.1.3 Ensure every CLI command uses the real factory outside tests.
+  - [x] 11.1.4 Add a test that constructs the service in a temp repository and runs `doctor`.
 
-- [ ] **11.2 Wire the real server runtime**
-  - [ ] 11.2.1 Implement `chainkeeper_server::runtime::build_state`.
+- [x] **11.2 Wire the real server runtime**
+  - [x] 11.2.1 Implement `chainkeeper_server::runtime::build_state`.
     - Open store and index.
     - Build snapshot.
     - Build publish directory.
     - Load OCSP state.
-  - [ ] 11.2.2 Implement watcher task wiring.
-  - [ ] 11.2.3 Implement `main`.
+  - [x] 11.2.2 Implement watcher task wiring.
+  - [x] 11.2.3 Implement `main`.
     - Parse config.
     - Initialize tracing.
     - Build state.
     - Bind listener.
     - Serve with graceful shutdown.
-  - [ ] 11.2.4 Add a test that starts the real server against a temp repository.
-  - [ ] 11.2.5 Add a test that kills and awaits the server task.
+  - [x] 11.2.4 Add a test that starts the real server against a temp repository.
+  - [x] 11.2.5 Add a test that kills and awaits the server task.
 
-- [ ] **11.3 Add end-to-end lifecycle tests**
-  - [ ] 11.3.1 Init two tenants in two temp repositories.
+- [x] **11.3 Add end-to-end lifecycle tests**
+  - [x] 11.3.1 Init two tenants in two temp repositories.
     - Assert independent configs and indexes.
-  - [ ] 11.3.2 Create root in each tenant.
-  - [ ] 11.3.3 Create TLS, S/MIME, code-signing, and OCSP intermediates.
-  - [ ] 11.3.4 Create OCSP signer.
-  - [ ] 11.3.5 Issue TLS server certificate.
-  - [ ] 11.3.6 Issue TLS client certificate.
-  - [ ] 11.3.7 Issue mTLS certificate.
-  - [ ] 11.3.8 Issue S/MIME certificate.
-  - [ ] 11.3.9 Issue code-signing certificate.
-  - [ ] 11.3.10 Issue OCSP signing certificate.
-  - [ ] 11.3.11 Revoke a TLS certificate.
-  - [ ] 11.3.12 Replace a certificate.
-  - [ ] 11.3.13 Publish artifacts.
-  - [ ] 11.3.14 Assert each mutating step created a Git commit.
-  - [ ] 11.3.15 Delete `cache/index.sqlite`, rebuild, and assert search and inspect results are identical.
-  - [ ] 11.3.16 Clone the repository without private keys, run doctor, and assert only expected key warnings remain.
+  - [x] 11.3.2 Create root in each tenant.
+  - [x] 11.3.3 Create TLS, S/MIME, code-signing, and OCSP intermediates.
+  - [x] 11.3.4 Create OCSP signer.
+  - [x] 11.3.5 Issue TLS server certificate.
+  - [x] 11.3.6 Issue TLS client certificate.
+  - [x] 11.3.7 Issue mTLS certificate.
+  - [x] 11.3.8 Issue S/MIME certificate.
+  - [x] 11.3.9 Issue code-signing certificate.
+  - [x] 11.3.10 Issue OCSP signing certificate.
+  - [x] 11.3.11 Revoke a TLS certificate.
+  - [x] 11.3.12 Replace a certificate.
+  - [x] 11.3.13 Publish artifacts.
+  - [x] 11.3.14 Assert each mutating step created a Git commit.
+  - [x] 11.3.15 Delete `cache/index.sqlite`, rebuild, and assert search and inspect results are identical.
+  - [x] 11.3.16 Clone the repository without private keys, run doctor, and assert only expected key warnings remain.
 
-- [ ] **11.4 Add RFC compliance tests**
-  - [ ] 11.4.1 RFC 5280 certificate checks.
+- [x] **11.4 Add RFC compliance tests**
+  - [x] 11.4.1 RFC 5280 certificate checks.
     - `openssl verify -CAfile root.pem -untrusted intermediate.pem leaf.pem` passes for each leaf.
     - Assert version 3, serial positivity, issuer/subject encoding, validity, basic constraints, key usage, EKU, SAN, SKI, AKI, AIA, and CRL DP.
     - Assert no duplicate extensions.
-  - [ ] 11.4.2 RFC 5280 path length checks.
+  - [x] 11.4.2 RFC 5280 path length checks.
     - Leaf cannot sign another certificate.
     - Intermediate path length 0.
-  - [ ] 11.4.3 CRL checks.
+  - [x] 11.4.3 CRL checks.
     - `openssl crl -in crl.pem -noout -verify -CAfile intermediate.pem` passes.
     - Revoked serial present with reason.
     - Non-revoked serial absent.
     - CRL number increases.
-  - [ ] 11.4.4 OCSP checks.
+  - [x] 11.4.4 OCSP checks.
     - `openssl ocsp -issuer intermediate.pem -cert leaf.pem -url http://127.0.0.1:<port>/ocsp -respout response.der` returns good.
     - Revoked certificate returns revoked with reason.
     - Unknown serial returns unknown.
     - `openssl ocsp -respin response.der -text` parses.
-  - [ ] 11.4.5 Assert OCSP response uses the OCSP signer certificate, not a CA certificate.
-  - [ ] 11.4.6 Assert nonce round-trip with `openssl ocsp` when supported.
+  - [x] 11.4.5 Assert OCSP response uses the OCSP signer certificate, not a CA certificate.
+  - [x] 11.4.6 Assert nonce round-trip with `openssl ocsp` when supported.
 
-- [ ] **11.5 Add security invariant tests**
-  - [ ] 11.5.1 Scan the Git tree for `PRIVATE KEY` blocks and assert zero tracked keys.
-  - [ ] 11.5.2 Scan `publish/` and server publish directory for `PRIVATE KEY` blocks and assert zero.
-  - [ ] 11.5.3 Assert server rejects a publish directory containing a private key.
-  - [ ] 11.5.4 Assert CLI logs do not contain `PRIVATE KEY`, `BEGIN RSA PRIVATE KEY`, or passphrase values.
-  - [ ] 11.5.5 Assert all artifact writes are atomic by injecting a write failure.
-  - [ ] 11.5.6 Assert audit files are append-only by attempting duplicate creation.
-  - [ ] 11.5.7 Assert no product crate invokes `Command::new("openssl")`.
-  - [ ] 11.5.8 Assert the server never opens root or intermediate key files.
-  - [ ] 11.5.9 Assert file modes for keys and directories on Unix.
-  - [ ] 11.5.10 Assert path traversal across CLI, store, publish, and server.
+- [x] **11.5 Add security invariant tests**
+  - [x] 11.5.1 Scan the Git tree for `PRIVATE KEY` blocks and assert zero tracked keys.
+  - [x] 11.5.2 Scan `publish/` and server publish directory for `PRIVATE KEY` blocks and assert zero.
+  - [x] 11.5.3 Assert server rejects a publish directory containing a private key.
+  - [x] 11.5.4 Assert CLI logs do not contain `PRIVATE KEY`, `BEGIN RSA PRIVATE KEY`, or passphrase values.
+  - [x] 11.5.5 Assert all artifact writes are atomic by injecting a write failure.
+  - [x] 11.5.6 Assert audit files are append-only by attempting duplicate creation.
+  - [x] 11.5.7 Assert no product crate invokes `Command::new("openssl")`.
+  - [x] 11.5.8 Assert the server never opens root or intermediate key files.
+  - [x] 11.5.9 Assert file modes for keys and directories on Unix.
+  - [x] 11.5.10 Assert path traversal across CLI, store, publish, and server.
 
-- [ ] **11.6 Add concurrency and failure tests**
-  - [ ] 11.6.1 Run 20 parallel `ck issue` operations in one repository.
+- [x] **11.6 Add concurrency and failure tests**
+  - [x] 11.6.1 Run 20 parallel `ck issue` operations in one repository.
     - Assert unique serials, 20 certificates, 20 audit events, and 20 commits.
     - Assert no index rows lost.
-  - [ ] 11.6.2 Run parallel `ck revoke` on the same certificate.
+  - [x] 11.6.2 Run parallel `ck revoke` on the same certificate.
     - Assert exactly one succeeds and one returns conflict.
-  - [ ] 11.6.3 Kill the process during publish and assert the previous publish remains valid.
-  - [ ] 11.6.4 Occupy the lock and assert CLI times out with exit 1 and no files created.
-  - [ ] 11.6.5 Corrupt index and assert rebuild recovers.
-  - [ ] 11.6.6 Corrupt one certificate PEM and assert doctor reports the exact path and issue.
-  - [ ] 11.6.7 Make publish directory read-only and assert publish fails without partial state.
+  - [x] 11.6.3 Kill the process during publish and assert the previous publish remains valid.
+  - [x] 11.6.4 Occupy the lock and assert CLI times out with exit 1 and no files created.
+  - [x] 11.6.5 Corrupt index and assert rebuild recovers.
+  - [x] 11.6.6 Corrupt one certificate PEM and assert doctor reports the exact path and issue.
+  - [x] 11.6.7 Make publish directory read-only and assert publish fails without partial state.
 
-- [ ] **11.7 Add release and packaging automation**
-  - [ ] 11.7.1 Add `Dockerfile` for `ck` and `ck-server`.
+- [x] **11.7 Add release and packaging automation**
+  - [x] 11.7.1 Add `Dockerfile` for `ck` and `ck-server`.
     - Multi-stage Rust build.
     - Non-root runtime user.
     - `ck-server` exposed on 8080.
     - Healthcheck uses `/healthz`.
-  - [ ] 11.7.2 Add `docker-bake.hcl` for building both images.
-  - [ ] 11.7.3 Add CI job to build Docker images and run `docker run --rm <image> ck --version`.
-  - [ ] 11.7.4 Add CI job to run `ck-server --help`.
-  - [ ] 11.7.5 Add `cargo-audit` CI job.
-  - [ ] 11.7.6 Add `cargo-deny` license and advisory job.
-  - [ ] 11.7.7 Add release workflow that builds `ck` and `ck-server` for Linux x86_64 and aarch64.
-  - [ ] 11.7.8 Add checksum generation for release binaries.
-  - [ ] 11.7.9 Add a test asserting CI workflow YAML is valid with `actionlint`.
-  - [ ] 11.7.10 Add a test asserting Dockerfile uses a non-root user.
+  - [x] 11.7.2 Add `docker-bake.hcl` for building both images.
+  - [x] 11.7.3 Add CI job to build Docker images and run `docker run --rm <image> ck --version`.
+  - [x] 11.7.4 Add CI job to run `ck-server --help`.
+  - [x] 11.7.5 Add `cargo-audit` CI job.
+  - [x] 11.7.6 Add `cargo-deny` license and advisory job.
+  - [x] 11.7.7 Add release workflow that builds `ck` and `ck-server` for Linux x86_64 and aarch64.
+  - [x] 11.7.8 Add checksum generation for release binaries.
+  - [x] 11.7.9 Add a test asserting CI workflow YAML is valid with `actionlint`.
+  - [x] 11.7.10 Add a test asserting Dockerfile uses a non-root user.
 
-- [ ] **11.8 Add documentation-as-code checks**
-  - [ ] 11.8.1 Add rustdoc examples to `chainkeeper-core` for `Signer`, `PolicyEngine`, and `ChainkeeperService`.
-  - [ ] 11.8.2 Run doctests with `cargo test --quiet --doc`.
-  - [ ] 11.8.3 Add a compile-fail doctest proving `Signer` cannot be implemented with an unsafe block.
-  - [ ] 11.8.4 Add a test that every public error variant has a documented exit code.
-  - [ ] 11.8.5 Add `README.md` code fences that are extracted and compiled by `cargo test --doc` where applicable.
+- [x] **11.8 Add documentation-as-code checks**
+  - [x] 11.8.1 Add rustdoc examples to `chainkeeper-core` for `Signer`, `PolicyEngine`, and `ChainkeeperService`.
+  - [x] 11.8.2 Run doctests with `cargo test --quiet --doc`.
+  - [x] 11.8.3 Add a compile-fail doctest proving `Signer` cannot be implemented with an unsafe block.
+  - [x] 11.8.4 Add a test that every public error variant has a documented exit code.
+  - [x] 11.8.5 Add `README.md` code fences that are extracted and compiled by `cargo test --doc` where applicable.
 
-- [ ] **11.9 Add final verification targets**
-  - [ ] 11.9.1 Add a `Makefile` target `verify` that runs fmt, clippy, tests, doc, and deny.
-  - [ ] 11.9.2 Add a `Makefile` target `verify-phase` that accepts a crate name and runs only that crate's checks.
-  - [ ] 11.9.3 Add a test asserting no phase-specific code is gated behind `#[cfg(test)]` in production paths.
-  - [ ] 11.9.4 Add a test asserting all public traits remain object-safe.
-  - [ ] 11.9.5 Add a test asserting the workspace contains exactly the twelve planned crates and no extra publishable crates.
+- [x] **11.9 Add final verification targets**
+  - [x] 11.9.1 Add a `Makefile` target `verify` that runs fmt, clippy, tests, doc, and deny.
+  - [x] 11.9.2 Add a `Makefile` target `verify-phase` that accepts a crate name and runs only that crate's checks.
+  - [x] 11.9.3 Add a test asserting no phase-specific code is gated behind `#[cfg(test)]` in production paths.
+  - [x] 11.9.4 Add a test asserting all public traits remain object-safe.
+  - [x] 11.9.5 Add a test asserting the workspace contains exactly the twelve planned crates and no extra publishable crates.
 
 ### Acceptance Criteria
 
-- [ ] `cargo test --quiet -p chainkeeper-engine -p chainkeeper-cli -p chainkeeper-server` passes with real implementations.
-- [ ] End-to-end tests cover two independent tenants.
-- [ ] End-to-end tests cover all six certificate profiles.
-- [ ] End-to-end tests cover issue, revoke, replace, publish, OCSP, CRL, audit, search, inspect, tree, analyze, doctor, diff, and index rebuild.
-- [ ] `openssl verify` passes for every generated leaf chain.
-- [ ] `openssl crl -verify` passes for every generated CRL.
-- [ ] `openssl ocsp` returns `good`, `revoked`, and `unknown` for the expected cases.
-- [ ] A test asserts no tracked or published private keys exist.
-- [ ] A test asserts no product crate shells out to `openssl`.
-- [ ] A test asserts the server never opens root or intermediate key files.
-- [ ] Concurrency tests pass with 20 parallel issuances and conflicting revocations.
-- [ ] Failure tests assert no partial state after interrupted publish, index corruption, or lock timeout.
-- [ ] `cargo fmt --all --check` passes.
-- [ ] `cargo clippy --workspace --all-targets --all-features -- -D warnings` passes.
-- [ ] `cargo test --quiet --workspace --all-features` passes.
-- [ ] `RUSTDOCFLAGS="-D warnings" cargo doc --workspace --no-deps` passes.
-- [ ] `cargo deny check` and `cargo audit` pass.
-- [ ] `actionlint` validates all CI workflows.
-- [ ] Docker images build and report `ck --version` and `ck-server --help`.
+- [x] `cargo test --quiet -p chainkeeper-engine -p chainkeeper-cli -p chainkeeper-server` passes with real implementations.
+- [x] End-to-end tests cover two independent tenants.
+- [x] End-to-end tests cover all six certificate profiles.
+- [x] End-to-end tests cover issue, revoke, replace, publish, OCSP, CRL, audit, search, inspect, tree, analyze, doctor, diff, and index rebuild.
+- [x] `openssl verify` passes for every generated leaf chain.
+- [x] `openssl crl -verify` passes for every generated CRL.
+- [x] `openssl ocsp` returns `good`, `revoked`, and `unknown` for the expected cases.
+- [x] A test asserts no tracked or published private keys exist.
+- [x] A test asserts no product crate shells out to `openssl`.
+- [x] A test asserts the server never opens root or intermediate key files.
+- [x] Concurrency tests pass with 20 parallel issuances and conflicting revocations.
+- [x] Failure tests assert no partial state after interrupted publish, index corruption, or lock timeout.
+- [x] `cargo fmt --all --check` passes.
+- [x] `cargo clippy --workspace --all-targets --all-features -- -D warnings` passes.
+- [x] `cargo test --quiet --workspace --all-features` passes.
+- [x] `RUSTDOCFLAGS="-D warnings" cargo doc --workspace --no-deps` passes.
+- [x] `cargo deny check` and `cargo audit` pass.
+- [x] `actionlint` validates all CI workflows.
+- [x] Docker images build and report `ck --version` and `ck-server --help`.

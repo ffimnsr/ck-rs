@@ -55,6 +55,7 @@ pub fn doctor(engine: &Engine) -> Result<DoctorReport, ChainkeeperError> {
         .collect();
 
     check_root(now, &authorities, &mut findings);
+    check_certificates(engine, &mut findings);
     check_intermediates(now, &by_name, &mut findings);
     check_crls(engine, now, &mut findings);
     check_ocsp_signer(engine, now, &authorities, &mut findings);
@@ -113,6 +114,65 @@ fn check_root(
                 ),
                 Some(root.name.to_string()),
             ));
+        }
+    }
+}
+
+fn check_certificates(engine: &Engine, findings: &mut Vec<DoctorFinding>) {
+    let records = match engine.store.list_certificates() {
+        Ok(records) => records,
+        Err(error) => {
+            findings.push(finding(
+                "CERTIFICATE_SCAN_FAILED",
+                Severity::Error,
+                format!("could not list certificates: {error}"),
+                None,
+            ));
+            return;
+        }
+    };
+    for record in records {
+        let path = engine.root_join(&record.path);
+        let object_id = Some(path.display().to_string());
+        match std::fs::read(&path) {
+            Ok(bytes) => {
+                if parse_x509_pem(&bytes).is_err() {
+                    findings.push(finding(
+                        "CERTIFICATE_INVALID",
+                        Severity::Error,
+                        format!(
+                            "certificate {} at {} is not valid PEM",
+                            record.serial,
+                            path.display()
+                        ),
+                        object_id,
+                    ));
+                }
+            }
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound => {
+                findings.push(finding(
+                    "CERTIFICATE_MISSING",
+                    Severity::Error,
+                    format!(
+                        "certificate {} is missing its PEM at {}",
+                        record.serial,
+                        path.display()
+                    ),
+                    object_id,
+                ));
+            }
+            Err(error) => {
+                findings.push(finding(
+                    "CERTIFICATE_UNREADABLE",
+                    Severity::Error,
+                    format!(
+                        "certificate {} at {} cannot be read: {error}",
+                        record.serial,
+                        path.display()
+                    ),
+                    object_id,
+                ));
+            }
         }
     }
 }

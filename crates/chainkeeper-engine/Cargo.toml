@@ -10,7 +10,14 @@ repository.workspace = true
 authors.workspace = true
 
 [dependencies]
+chainkeeper-audit = { workspace = true }
 chainkeeper-core = { workspace = true }
+chainkeeper-crypto = { workspace = true }
+chainkeeper-git = { workspace = true }
+chainkeeper-ocsp = { workspace = true }
+chainkeeper-policy = { workspace = true }
+chainkeeper-publish = { workspace = true }
+chainkeeper-store = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
 serde_yaml_ng = { workspace = true }
@@ -20,8 +27,11 @@ time = { workspace = true }
 x509-parser = { workspace = true }
 
 [dev-dependencies]
-chainkeeper-git = { workspace = true }
+anyhow = { workspace = true }
+chainkeeper-server = { workspace = true }
 chainkeeper-testkit = { workspace = true }
+git2 = { workspace = true }
+tokio = { workspace = true }
 serde_json = { workspace = true }
 serde_yaml_ng = { workspace = true }
 tempfile = { workspace = true }

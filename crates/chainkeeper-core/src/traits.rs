@@ -61,6 +61,22 @@ pub trait IdGenerator: Send + Sync {
 ///
 /// Production implementations are file based in V1. `YubiKey` and PKCS#11
 /// implementations will provide the same trait in a later phase.
+///
+/// ```
+/// use chainkeeper_core::{SignatureScheme, Signer};
+///
+/// fn signs(signer: &dyn Signer, message: &[u8]) -> bool {
+///     let scheme = SignatureScheme::from_key_algorithm(signer.algorithm());
+///     signer.sign(message, scheme).is_ok()
+/// }
+/// ```
+///
+/// The trait is safe to implement. An `unsafe impl` is rejected by the
+/// compiler:
+///
+/// ```compile_fail
+/// unsafe impl chainkeeper_core::Signer for () {}
+/// ```
 pub trait Signer: Send + Sync {
     /// Algorithm of the held key.
     fn algorithm(&self) -> KeyAlgorithm;
@@ -378,6 +394,16 @@ pub trait ProfileRegistry: Send + Sync {
 }
 
 /// Policy validation engine.
+///
+/// ```
+/// use chainkeeper_core::{Policy, PolicyEngine, builtin_profiles};
+///
+/// fn first_profile_is_allowed(engine: &dyn PolicyEngine, policy: &Policy) -> bool {
+///     engine
+///         .validate_profile(policy, &builtin_profiles()[0])
+///         .is_ok()
+/// }
+/// ```
 pub trait PolicyEngine: Send + Sync {
     /// Validates an issuance request against the policy and profile.
     ///
@@ -603,6 +629,17 @@ pub trait OcspResponder: Send + Sync {
 }
 
 /// Full PKI workflow surface consumed by the CLI.
+///
+/// ```
+/// use chainkeeper_core::ChainkeeperService;
+///
+/// fn root_count(service: &dyn ChainkeeperService) -> usize {
+///     service
+///         .tree()
+///         .map(|tree| tree.roots.len())
+///         .unwrap_or_default()
+/// }
+/// ```
 pub trait ChainkeeperService: Send + Sync {
     /// Initialises a repository.
     ///

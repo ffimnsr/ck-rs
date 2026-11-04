@@ -48,6 +48,7 @@ pub struct GitRepo {
     root: PathBuf,
     identity: Option<GitIdentity>,
     signer: Option<Arc<dyn CommitSigner>>,
+    signing: Option<bool>,
 }
 
 impl fmt::Debug for GitRepo {
@@ -57,6 +58,7 @@ impl fmt::Debug for GitRepo {
             .field("root", &self.root)
             .field("identity", &self.identity)
             .field("signer", &self.signer.is_some())
+            .field("signing", &self.signing)
             .finish()
     }
 }
@@ -69,6 +71,7 @@ impl GitRepo {
             root: root.into(),
             identity: None,
             signer: None,
+            signing: None,
         }
     }
 
@@ -94,6 +97,15 @@ impl GitRepo {
     #[must_use]
     pub fn with_commit_signer(mut self, signer: Arc<dyn CommitSigner>) -> Self {
         self.signer = Some(signer);
+        self
+    }
+
+    /// Overrides whether commits are signed.
+    ///
+    /// `None` honours `commit.gpgsign` from the repository configuration.
+    #[must_use]
+    pub const fn with_signing(mut self, enabled: bool) -> Self {
+        self.signing = Some(enabled);
         self
     }
 
@@ -279,7 +291,8 @@ impl GitRepo {
         tree: &git2::Tree<'_>,
         parents: &[&git2::Commit<'_>],
     ) -> Result<String, ChainkeeperError> {
-        if !signing_enabled(repository)? {
+        let signing = self.signing.unwrap_or(signing_enabled(repository)?);
+        if !signing {
             let oid = repository
                 .commit(Some(HEAD_REF), signature, signature, message, tree, parents)
                 .map_err(|error| git(format!("could not create commit: {error}")))?;

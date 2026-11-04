@@ -47,6 +47,27 @@ pub enum ErrorKind {
 }
 
 impl ErrorKind {
+    /// Every error kind, in declaration order.
+    pub const ALL: [Self; 17] = [
+        Self::Config,
+        Self::Validation,
+        Self::Policy,
+        Self::Profile,
+        Self::Crypto,
+        Self::Storage,
+        Self::Index,
+        Self::Audit,
+        Self::Git,
+        Self::Lock,
+        Self::Publish,
+        Self::Ocsp,
+        Self::NotFound,
+        Self::AlreadyExists,
+        Self::Conflict,
+        Self::NotImplemented,
+        Self::Io,
+    ];
+
     /// Short stable label used in error display output.
     #[must_use]
     pub const fn as_str(self) -> &'static str {

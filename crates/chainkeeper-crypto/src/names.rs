@@ -2,8 +2,6 @@
 
 use chainkeeper_core::{ChainkeeperError, SubjectName};
 use openssl::nid::Nid;
-#[cfg(test)]
-use openssl::x509::X509Name;
 use openssl::x509::{X509NameBuilder, X509NameRef};
 
 fn crypto<E: std::fmt::Display>(error: E) -> ChainkeeperError {
@@ -61,37 +59,7 @@ fn append_optional(
     Ok(())
 }
 
-/// Parses a DER distinguished name into the subject fields V1 understands.
-///
-/// # Errors
-///
-/// Returns [`ChainkeeperError::Crypto`] when the name cannot be decoded.
-#[cfg(test)]
-pub fn from_der(der: &[u8]) -> Result<SubjectName, ChainkeeperError> {
-    let name = X509Name::from_der(der).map_err(crypto)?;
-    from_x509(&name)
-}
-
-/// Extracts subject fields from an OpenSSL distinguished name.
-///
-/// # Errors
-///
-/// Returns [`ChainkeeperError::Validation`] when the common name is missing.
-#[cfg(test)]
-pub fn from_x509(name: &X509NameRef) -> Result<SubjectName, ChainkeeperError> {
-    let cn = first_entry(name, Nid::COMMONNAME)
-        .ok_or_else(|| ChainkeeperError::validation("subject has no common name"))?;
-    Ok(SubjectName {
-        cn,
-        organization: first_entry(name, Nid::ORGANIZATIONNAME),
-        organizational_unit: first_entry(name, Nid::ORGANIZATIONALUNITNAME),
-        country: first_entry(name, Nid::COUNTRYNAME),
-        state: first_entry(name, Nid::STATEORPROVINCENAME),
-        locality: first_entry(name, Nid::LOCALITYNAME),
-        email: first_entry(name, Nid::PKCS9_EMAILADDRESS),
-    })
-}
-
+/// Extracts one subject attribute from an OpenSSL distinguished name.
 fn first_entry(name: &X509NameRef, nid: Nid) -> Option<String> {
     name.entries_by_nid(nid)
         .next()
@@ -140,8 +108,30 @@ pub fn ocsp_signer_subject(name: &str, parent: &X509NameRef) -> SubjectName {
 #[cfg(test)]
 mod tests {
     use chainkeeper_core::SubjectName;
+    use openssl::nid::Nid;
+    use openssl::x509::{X509Name, X509NameRef};
 
-    use super::{from_x509, render, to_der};
+    use super::{crypto, first_entry, render, to_der};
+
+    fn from_der(der: &[u8]) -> Result<SubjectName, chainkeeper_core::ChainkeeperError> {
+        let name = X509Name::from_der(der).map_err(crypto)?;
+        from_x509(&name)
+    }
+
+    fn from_x509(name: &X509NameRef) -> Result<SubjectName, chainkeeper_core::ChainkeeperError> {
+        let cn = first_entry(name, Nid::COMMONNAME).ok_or_else(|| {
+            chainkeeper_core::ChainkeeperError::validation("subject has no common name")
+        })?;
+        Ok(SubjectName {
+            cn,
+            organization: first_entry(name, Nid::ORGANIZATIONNAME),
+            organizational_unit: first_entry(name, Nid::ORGANIZATIONALUNITNAME),
+            country: first_entry(name, Nid::COUNTRYNAME),
+            state: first_entry(name, Nid::STATEORPROVINCENAME),
+            locality: first_entry(name, Nid::LOCALITYNAME),
+            email: first_entry(name, Nid::PKCS9_EMAILADDRESS),
+        })
+    }
 
     #[test]
     fn subject_round_trips_in_canonical_order() {
@@ -149,7 +139,7 @@ mod tests {
         subject.country = Some("US".to_owned());
         subject.email = Some("ops@example.test".to_owned());
         let der = to_der(&subject).expect("encode");
-        let parsed = super::from_der(&der).expect("decode");
+        let parsed = from_der(&der).expect("decode");
         assert_eq!(parsed, subject);
     }
 

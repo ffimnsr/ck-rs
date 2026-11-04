@@ -44,12 +44,27 @@ fn allowed(name: &str) -> BTreeSet<&'static str> {
             "chainkeeper-git",
             "chainkeeper-publish",
         ]),
+        // The engine is the composition root for the concrete implementations.
+        "chainkeeper-engine" => BTreeSet::from([
+            "chainkeeper-core",
+            "chainkeeper-store",
+            "chainkeeper-crypto",
+            "chainkeeper-policy",
+            "chainkeeper-audit",
+            "chainkeeper-git",
+            "chainkeeper-publish",
+            "chainkeeper-ocsp",
+        ]),
         "chainkeeper-server" => BTreeSet::from([
             "chainkeeper-core",
             "chainkeeper-store",
+            "chainkeeper-crypto",
+            "chainkeeper-policy",
             "chainkeeper-publish",
             "chainkeeper-git",
             "chainkeeper-audit",
+            "chainkeeper-ocsp",
+            "chainkeeper-engine",
         ]),
         _ => BTreeSet::from(["chainkeeper-core"]),
     }

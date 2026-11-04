@@ -32,10 +32,14 @@ pub fn init_tracing_with_default(default_filter: &str) -> Result<(), Chainkeeper
     let result = if json {
         tracing_subscriber::fmt()
             .with_env_filter(filter)
+            .with_writer(std::io::stderr)
             .json()
             .try_init()
     } else {
-        tracing_subscriber::fmt().with_env_filter(filter).try_init()
+        tracing_subscriber::fmt()
+            .with_env_filter(filter)
+            .with_writer(std::io::stderr)
+            .try_init()
     };
 
     result

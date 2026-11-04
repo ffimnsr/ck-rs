@@ -1,5 +1,6 @@
 #![forbid(unsafe_code)]
 #![warn(missing_debug_implementations)]
+#![doc = include_str!("../../../README.md")]
 
 //! Frozen domain contracts for Chainkeeper.
 //!

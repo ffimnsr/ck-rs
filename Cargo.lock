@@ -360,12 +360,8 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "assert_cmd",
- "chainkeeper-audit",
  "chainkeeper-core",
- "chainkeeper-crypto",
  "chainkeeper-engine",
- "chainkeeper-git",
- "chainkeeper-policy",
  "chainkeeper-publish",
  "chainkeeper-store",
  "chainkeeper-testkit",
@@ -415,15 +411,25 @@ dependencies = [
 name = "chainkeeper-engine"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
+ "chainkeeper-audit",
  "chainkeeper-core",
+ "chainkeeper-crypto",
  "chainkeeper-git",
+ "chainkeeper-ocsp",
+ "chainkeeper-policy",
+ "chainkeeper-publish",
+ "chainkeeper-server",
+ "chainkeeper-store",
  "chainkeeper-testkit",
+ "git2",
  "serde",
  "serde_json",
  "serde_yaml_ng",
  "sha2",
  "tempfile",
  "time",
+ "tokio",
  "x509-parser",
 ]
 
@@ -490,7 +496,9 @@ dependencies = [
  "axum",
  "chainkeeper-audit",
  "chainkeeper-core",
+ "chainkeeper-engine",
  "chainkeeper-git",
+ "chainkeeper-ocsp",
  "chainkeeper-publish",
  "chainkeeper-store",
  "chainkeeper-testkit",
